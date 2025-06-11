@@ -1,0 +1,63 @@
+/* CSS Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Body Styles */
+  body {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    background-color: #f2f2f2;
+    background: url("UB1.jpeg");
+  }
+  
+  /* Header Styles */
+  header {
+    background-color: #4caf50;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+  }
+  
+  /* Main Styles */
+  main {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  section {
+
+    width: 600px;
+    margin: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: justify;
+  }
+  
+  h2 {
+    margin-bottom: 10px;
+  }
+  
+  p {
+    margin-bottom: 10px;
+  }
+  
+  /* Footer Styles */
+  footer {
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    margin-top: 20px;
+    bottom: 0;
+    position: fixed;
+    width: 100%;
+  }
+  

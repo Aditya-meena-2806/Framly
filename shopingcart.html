@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>shoping cart page</title>
+    <link rel="stylesheet" href="shopingcart.css">
+</head>
+<body>
+    
+    <!-- shopping cart area start -->
+    <!-- /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ -->
+    <!-- selected and favorite product items area start -->
+    <div class="shopping-cart-area" id="product-cart-area">
+        <div class="shopping-cart-wrap">
+            <div class="product-cart-menu">
+                <div class="cart-menu-items">
+                    <h2 id="selected-products" class="active-cart-menu">Selected Products</h2>
+                    <h2 id="favorite-products">Favorite Products</h2>
+                </div>
+
+                <div class="cart-close-btn">
+                    <button>Close Cart</button>
+                </div>
+            </div>
+
+            <div class="cart-contents-header">
+                <div class="total-cart-items">
+                    <p id="total-selected" class="active-product-counter">
+                        <strong>Total Selected: </strong>
+                        <span>No item found</span>
+                    </p>
+                    <p id="total-favorite">
+                        <strong>Total Favorite: </strong>
+                        <span>No item found</span>
+                    </p>
+                </div>
+
+                <div class="buying-product-title">
+                    <div class="total-buying-item">
+                        <p>
+                            <strong>Total Buying Items: </strong>
+                            <span id="total-buying-item-counter">0</span>
+                        </p>
+                    </div>
+                    <div class="buy-items-button">
+                        <button id="buy-items">Buy Items</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cart-contents-area shopping-cart-contents-area active-cart-content">
+                <!-- selected product contents -->
+            </div>
+            <div class="cart-wishlist-area shopping-cart-contents-area">
+                <!-- favorite product contents -->
+            </div>
+
+        </div>
+
+    </div>
+    <!-- selected and favorite product items area end -->
+
+
+
+    <!-- confirmation message area start -->
+    <div class="remove-confirmation-message">
+        <div class="remove-message-wrap">
+            <div class="remove-message-title">
+                <h2>Remove item confirmation message</h2>
+            </div>
+
+            <div class="remove-message-button">
+                <button id="remove-confirm-btn">Remove</button>
+                <button id="remove-cancel-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="popup-shadow"></div>
+    <!-- confirmation message area end -->
+
+
+
+    <!-- buying details/shoping cart area start -->
+    <div class="buying-details-area">
+        <div class="buying-details-wrap">
+            <div class="shop-title">
+                <h1>Shopping Cart</h1>
+            </div>
+
+            <div class="shopping-details-wrap">
+                <div class="shopping-details-header">
+                    <div class="shopping-details">
+                        <div class="shop-detail product-sl">
+                            <h2>SL No.</h2>
+                        </div>
+                        <div class="shop-detail product-name">
+                            <h2>Product Name</h2>
+                        </div>
+                        <div class="shop-detail regular-price">
+                            <h2>Regular Price</h2>
+                        </div>
+                        <div class="shop-detail discount">
+                            <h2>Discount</h2>
+                        </div>
+                        <div class="shop-detail present-price">
+                            <h2>Present Price</h2>
+                        </div>
+                        <div class="shop-detail product-quantity">
+                            <h2>Quantity</h2>
+                        </div>
+                        <div class="shop-detail total-amount">
+                            <h2>Total Price</h2>
+                        </div>
+                        <div class="shop-detail remove-all-btn">
+                            <button id="remove-all-items">Remove All</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="shopping-details-content">
+                    <!-- shopping details content -->
+                </div>
+            </div>
+
+            <div class="buying-details-footer">
+                <div class="calculate-buying-details">
+                    <div class="calculate-total-items">
+                        <h2>Total Items: </h2>
+                        <p><span>000</span></p>
+                    </div>
+
+                    <div class="calculate-total-quantity">
+                        <h2>Total Quantity: </h2>
+                        <p>total quantity display here</p>
+                    </div>
+
+                    <div class="calculate-total-amount">
+                        <h2>Total Amount: </h2>
+                        <p><span>000</span> Rs.</p>
+                    </div>
+                </div>
+
+                <div class="confirm-order-button">
+                    <button id="confirm-order-btn">Confirm Order</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="close-buy-area">
+            <div id="close-buy-area-btn"></div>
+        </div>
+    </div>
+    <!-- buying details/shoping cart area end -->
+    <!-- /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ -->
+    <!-- shopping cart area end -->
+
+
+    
+</body>
+</html>
