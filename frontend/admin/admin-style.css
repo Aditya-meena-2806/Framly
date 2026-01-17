@@ -1,0 +1,83 @@
+* {
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f5f6fa;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background: #34495e;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+.container {
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    margin-bottom: 25px;
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+h3 {
+    margin-top: 0;
+    color: #34495e;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background: #ecf0f1;
+}
+
+button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+    margin: 5px;
+}
+
+.approve-btn {
+    background: #27ae60;
+}
+
+.approve-btn:hover {
+    background: #1e8449;
+}
+
+.block-btn {
+    background: #c0392b;
+}
+
+.block-btn:hover {
+    background: #a93226;
+}
+
+.card button {
+    background: #2980b9;
+}
+
+.card button:hover {
+    background: #2471a3;
+}

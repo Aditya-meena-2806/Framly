@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Farmer Dashboard | Farmly</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="farmer-style.css">
+</head>
+<body>
+
+<header>
+    <h2>Farmer Dashboard</h2>
+    <p>Manage Your Crops & Orders</p>
+</header>
+
+<div class="container">
+
+    <!-- Add Product Section -->
+    <div class="card">
+        <h3>Add New Product</h3>
+        <input type="text" placeholder="Product Name">
+        <input type="number" placeholder="Price (₹)">
+        <input type="number" placeholder="Quantity">
+        <input type="text" placeholder="Category (Fruit / Vegetable)">
+        <button>Add Product</button>
+    </div>
+
+    <!-- Product List Section -->
+    <div class="card">
+        <h3>Your Products</h3>
+        <table>
+            <tr>
+                <th>Product</th>
+                <th>Price (₹)</th>
+                <th>Quantity</th>
+                <th>Action</th>
+            </tr>
+            <tr>
+                <td>Tomato</td>
+                <td>40</td>
+                <td>50 kg</td>
+                <td>
+                    <button>Edit</button>
+                    <button class="delete-btn">Delete</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Orders Section -->
+    <div class="card">
+        <h3>Orders Received</h3>
+        <table>
+            <tr>
+                <th>Order ID</th>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Status</th>
+            </tr>
+            <tr>
+                <td>#ORD101</td>
+                <td>Potato</td>
+                <td>10 kg</td>
+                <td>Pending</td>
+            </tr>
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>
