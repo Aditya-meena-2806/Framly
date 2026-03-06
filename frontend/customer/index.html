@@ -11,8 +11,10 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="responsive.css">
     <link rel="stylesheet" href="icon.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <title>Farmly</title>
 </head>
 
@@ -22,14 +24,14 @@
         <!-- navbar -->
         <nav class="navbar">
             <div class="logo">
-                <a href="#"><span>Farmly</span></a>
+                <a href="index.html"><span>Farmly</span></a>
             </div>
 
             <ul class="nav-items">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="about.html">About</a></li>
                 <li><a href="services.html">Services</a></li>
-                <li><a href="#products">Products</a></li>
+                <li><a href="all-products.html">Products</a></li>
                 <li><a href="contactus.html">Contact</a></li>
             </ul>
 
@@ -37,14 +39,35 @@
                 <div class="search-icon">
                     <span class="fa-solid fa-magnifying-glass"></span>
                 </div>
-                <input type="text" placeholder="Search...">
+                <input type="text" id="navbar-search-input" placeholder="Search...">
             </div>
 
             <div class="icon-links">
                 <div id="search-btn"><span class="fa-solid fa-magnifying-glass"></span></div>
                 <div id="customer-center"><span class="fa-solid fa-phone"></span></div>
-                <div id="icon-shopping-cart"><span class="fa-solid fa-cart-shopping"><span id="item-counter">0</span></div>
-                <div id="login-or-signup"><a href="signup.html"><span class="fa-solid fa-user"></a></div>
+                <div id="icon-shopping-cart"><span class="fa-solid fa-cart-shopping"><span id="item-counter">0</span>
+                </div>
+                <div class="profile-container" id="profile-container">
+                    <div id="login-or-signup"><a href="login.html"><span class="fa-solid fa-user"></span></a></div>
+                    <div class="profile-dropdown" id="profile-dropdown">
+                        <div class="user-info">
+                            <p><strong>Username:</strong> <span id="user-name">Welcome!</span></p>
+                            <p><strong>Email:</strong> <span id="user-email"></span></p>
+                            <p><strong>Phone:</strong> <span id="user-phone"></span></p>
+                        </div>
+                        <hr>
+                        <ul class="profile-links">
+                            <li><a href="cart.html"><i class="fa-solid fa-box"></i> Orders</a></li>
+                            <li><a href="cart.html"><i class="fa-solid fa-heart"></i> Wishlist</a></li>
+                            <li><a href="#"><i class="fa-solid fa-gift"></i> Gift Cards</a></li>
+                            <li><a href="contactus.html"><i class="fa-solid fa-headset"></i> Contact Us</a></li>
+                        </ul>
+                        <hr>
+                        <div class="logout-btn-container">
+                            <button id="logout-btn">Logout</button>
+                        </div>
+                    </div>
+                </div>
                 <div id="toggle-bar"><span class="toggler"></span></div>
             </div>
         </nav>
@@ -68,14 +91,14 @@
 
         <!-- hero text -->
         <div id="hero">
-            <h1>Try fresh fruits and vegetables with great discount and lead a healthy life</h1>
-            <p>A place where you can connect with the heart of  farmers!</p>
+            <h1>Try fruits and vegetables with great discount and lead a healthy life</h1>
+            <p>A place where you can connect with the heart of farmers!</p>
             <div class="button">
                 <div class="btn">
-                    <a href="#">Explore</a>
+                    <a href="#top-products">Explore</a>
                 </div>
                 <div class="btn">
-                    <a href="#">Shop Now</a>
+                    <a href="all-products.html">Shop Now</a>
                 </div>
             </div>
         </div>
@@ -91,7 +114,7 @@
         <div class="section-wrap">
             <div class="sub-section-title">
                 <p>Top products</p>
-                <a href="#">See more <span class="fa-solid fa-angles-right"></span></a>
+                <a href="all-products.html">See more <span class="fa-solid fa-angles-right"></span></a>
             </div>
 
             <div class="products">
@@ -141,402 +164,22 @@
             <!-- fruits -->
             <div class="featured-product-wrap fruits">
                 <div class="sub-section-title">
-                    <p>Fresh Fruits And Vegies</p>
-                    <a href="#">See more <span class="fa-solid fa-angles-right"></span></a>
+                    <p>Fruits</p>
+                    <a href="all-products.html">See more <span class="fa-solid fa-angles-right"></span></a>
                 </div>
+                <div class="featured-products" id="fruits-container">
+                    <!-- Fruits will be loaded here -->
+                </div>
+            </div>
 
-                <div class="featured-products">
-                    <div class="product-wrap apple">
-                        <div class="product-img">
-                            <img src="img/fruits/apple.jpg" alt="apple_img">
-                        </div>
-
-                        <div class="product-icons">
-                            <div class="add-to-favorite"><span class="fa-solid fa-heart"></span></div>
-                            <p><span class="discount">18</span>% off</p>
-                        </div>
-
-                        <div class="product-description">
-                            <p class="product-name">Fresh Apple</p>
-                            <p class="price">
-                                <strong>Price:</strong>
-                                <del>
-                                    <span class="f-product-price">160</span>Rs/kg
-                                </del>
-                                <ins>
-                                    <span class="f-cur-price">000</span>Rs/kg
-                                </ins>
-                                <span class="f-product-unit">kg</span>
-                            </p>
-                            <div class="add-to-cart-btn">
-                                <p><span class="fa-solid fa-cart-plus"></span> Add to Cart</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="product-wrap orange">
-                        <div class="product-img">
-                            <img src="img/fruits/orange.jpg" alt="orange_img">
-                        </div>
-
-                        <div class="product-icons">
-                            <div class="add-to-favorite"><span class="fa-solid fa-heart"></span></div>
-                            <p><span class="discount">20</span>% off</p>
-                        </div>
-
-                        <div class="product-description">
-                            <p class="product-name">Fresh Orange</p>
-                            <p class="price">
-                                <strong>Price:</strong>
-                                <del>
-                                    <span class="f-product-price">140</span>Rs/kg
-                                </del>
-                                <ins>
-                                    <span class="f-cur-price">000</span>Rs/kg
-                                </ins>
-                                <span class="f-product-unit">kg</span>
-                            </p>
-                            <div class="add-to-cart-btn">
-                                <p><span class="fa-solid fa-cart-plus"></span> Add to Cart</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="product-wrap orange-green">
-                        <div class="product-img">
-                            <img src="img/fruits/orange-green.jpg" alt="orange_green_img">
-                        </div>
-
-                        <div class="product-icons">
-                            <div class="add-to-favorite"><span class="fa-solid fa-heart"></span></div>
-                            <p><span class="discount">18</span>% off</p>
-                        </div>
-
-                        <div class="product-description">
-                            <p class="product-name">Green Orange</p>
-                            <p class="price">
-                                <strong>Price:</strong>
-                                <del>
-                                    <span class="f-product-price">160</span>Rs/kg
-                                </del>
-                                <ins>
-                                    <span class="f-cur-price">000</span>Rs/kg
-                                </ins>
-                                <span class="f-product-unit">kg</span>
-                            </p>
-                            <div class="add-to-cart-btn">
-                                <p><span class="fa-solid fa-cart-plus"></span> Add to Cart</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="product-wrap grape">
-                        <div class="product-img">
-                            <img src="img/fruits/grape.jpg" alt="grape_img">
-                        </div>
-
-                        <div class="product-icons">
-                            <div class="add-to-favorite"><span class="fa-solid fa-heart"></span></div>
-                            <p><span class="discount">24</span>% off</p>
-                        </div>
-
-                        <div class="product-description">
-                            <p class="product-name">Fresh Grape</p>
-                            <p class="price">
-                                <strong>Price:</strong>
-                                <del>
-                                    <span class="f-product-price">180</span>Rs/kg
-                                </del>
-                                <ins>
-                                    <span class="f-cur-price">000</span>Rs/kg
-                                </ins>
-                                <span class="f-product-unit">kg</span>
-                            </p>
-                            <div class="add-to-cart-btn">
-                                <p><span class="fa-solid fa-cart-plus"></span> Add to Cart</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="product-wrap">
-                        <div class="product-img">
-                            <img src="img/fruits/kiwi.jpg" alt="kiwi_img">
-                        </div>
-
-                        <div class="product-icons">
-                            <div class="add-to-favorite"><span class="fa-solid fa-heart"></span></div>
-                            <p><span class="discount">22</span>% off</p>
-                        </div>
-
-                        <div class="product-description">
-                            <p class="product-name">Fresh Kiwi</p>
-                            <p class="price">
-                                <strong>Price:</strong>
-                                <del>
-                                    <span class="f-product-price">130</span>Kg/kg
-                                </del>
-                                <ins>
-                                    <span class="f-cur-price">000</span>Rs/kg
-                                </ins>
-                                <span class="f-product-unit">kg</span>
-                            </p>
-                            <div class="add-to-cart-btn">
-                                <p><span class="fa-solid fa-cart-plus"></span> Add to Cart</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="product-wrap pomegranate">
-                        <div class="product-img">
-                            <img src="img/fruits/pomegranate.jpg" alt="pomegranate_img">
-                        </div>
-
-                        <div class="product-icons">
-                            <div class="add-to-favorite"><span class="fa-solid fa-heart"></span></div>
-                            <p><span class="discount">20</span>% off</p>
-                        </div>
-
-                        <div class="product-description">
-                            <p class="product-name">Pomegranate</p>
-                            <p class="price">
-                                <strong>Price:</strong>
-                                <del>
-                                    <span class="f-product-price">180</span>Rs/pcs
-                                </del>
-                                <ins>
-                                    <span class="f-cur-price">000</span>Rs/pcs
-                                </ins>
-                                <span class="f-product-unit">pcs</span>
-                            </p>
-                            <div class="add-to-cart-btn">
-                                <p><span class="fa-solid fa-cart-plus"></span> Add to Cart</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="product-wrap strawberry">
-                        <div class="product-img">
-                            <img src="img/fruits/strawberry.jpg" alt="strawberry_img">
-                        </div>
-
-                        <div class="product-icons">
-                            <div class="add-to-favorite"><span class="fa-solid fa-heart"></span></div>
-                            <p><span class="discount">12</span>% off</p>
-                        </div>
-
-                        <div class="product-description">
-                            <p class="product-name">Strawberry</p>
-                            <p class="price">
-                                <strong>Price:</strong>
-                                <del>
-                                    <span class="f-product-price">130</span>Rs/kg
-                                </del>
-                                <ins>
-                                    <span class="f-cur-price">000</span>Rs/kg
-                                </ins>
-                                <span class="f-product-unit">kg</span>
-                            </p>
-                            <div class="add-to-cart-btn">
-                                <p><span class="fa-solid fa-cart-plus"></span> Add to Cart</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="product-wrap peach">
-                        <div class="product-img">
-                            <img src="img/fruits/peach.jpg" alt="peach_img">
-                        </div>
-
-                        <div class="product-icons">
-                            <div class="add-to-favorite"><span class="fa-solid fa-heart"></span></div>
-                            <p><span class="discount">18</span>% off</p>
-                        </div>
-
-                        <div class="product-description">
-                            <p class="product-name">Fresh Peach</p>
-                            <p class="price">
-                                <strong>Price:</strong>
-                                <del>
-                                    <span class="f-product-price">160</span>Rs/kg
-                                </del>
-                                <ins>
-                                    <span class="f-cur-price">000</span>Rs/kg
-                                </ins>
-                                <span class="f-product-unit">kg</span>
-                            </p>
-                            <div class="add-to-cart-btn">
-                                <p><span class="fa-solid fa-cart-plus"></span> Add to Cart</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="product-wrap mango">
-                        <div class="product-img">
-                            <img src="img/fruits/mango.jpg" alt="mango_img">
-                        </div>
-
-                        <div class="product-icons">
-                            <div class="add-to-favorite"><span class="fa-solid fa-heart"></span></div>
-                            <p><span class="discount">10</span>% off</p>
-                        </div>
-
-                        <div class="product-description">
-                            <p class="product-name">Fresh Mango</p>
-                            <p class="price">
-                                <strong>Price:</strong>
-                                <del>
-                                    <span class="f-product-price">180</span>Rs/kg
-                                </del>
-                                <ins>
-                                    <span class="f-cur-price">000</span>Rs/kg
-                                </ins>
-                                <span class="f-product-unit">kg</span>
-                            </p>
-                            <div class="add-to-cart-btn">
-                                <p><span class="fa-solid fa-cart-plus"></span> Add to Cart</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="product-wrap lemon">
-                        <div class="product-img">
-                            <img src="img/fruits/lemon.jpg" alt="lemon_img">
-                        </div>
-
-                        <div class="product-icons">
-                            <div class="add-to-favorite"><span class="fa-solid fa-heart"></span></div>
-                            <p><span class="discount">24</span>% off</p>
-                        </div>
-
-                        <div class="product-description">
-                            <p class="product-name">Fresh Lemon</p>
-                            <p class="price">
-                                <strong>Price:</strong>
-                                <del>
-                                    <span class="f-product-price">120</span>Rs/kg
-                                </del>
-                                <ins>
-                                    <span class="f-cur-price">000</span>Rs/kg
-                                </ins>
-                                <span class="f-product-unit">kg</span>
-                            </p>
-                            <div class="add-to-cart-btn">
-                                <p><span class="fa-solid fa-cart-plus"></span> Add to Cart</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="product-wrap cherry">
-                        <div class="product-img">
-                            <img src="img/fruits/cherry.jpg" alt="cherry_img">
-                        </div>
-
-                        <div class="product-icons">
-                            <div class="add-to-favorite"><span class="fa-solid fa-heart"></span></div>
-                            <p><span class="discount">22</span>% off</p>
-                        </div>
-
-                        <div class="product-description">
-                            <p class="product-name">Cherry</p>
-                            <p class="price">
-                                <strong>Price:</strong>
-                                <del>
-                                    <span class="f-product-price">150</span>Rs/kg
-                                </del>
-                                <ins>
-                                    <span class="f-cur-price">000</span>Rs/kg
-                                </ins>
-                                <span class="f-product-unit">kg</span>
-                            </p>
-                            <div class="add-to-cart-btn">
-                                <p><span class="fa-solid fa-cart-plus"></span> Add to Cart</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="product-wrap blueberry">
-                        <div class="product-img">
-                            <img src="img/fruits/blueberry.jpg" alt="blueberry_img">
-                        </div>
-
-                        <div class="product-icons">
-                            <div class="add-to-favorite"><span class="fa-solid fa-heart"></span></div>
-                            <p><span class="discount">16</span>% off</p>
-                        </div>
-
-                        <div class="product-description">
-                            <p class="product-name">Blueberry</p>
-                            <p class="price">
-                                <strong>Price:</strong>
-                                <del>
-                                    <span class="f-product-price">140</span>Rs/kg
-                                </del>
-                                <ins>
-                                    <span class="f-cur-price">000</span>Rs/kg
-                                </ins>
-                                <span class="f-product-unit">kg</span>
-                            </p>
-                            <div class="add-to-cart-btn">
-                                <p><span class="fa-solid fa-cart-plus"></span> Add to Cart</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="product-wrap">
-                        <div class="product-img">
-                            <img src="img/fruits/pinapple.jpg" alt="pinapple_img">
-                        </div>
-
-                        <div class="product-icons">
-                            <div class="add-to-favorite"><span class="fa-solid fa-heart"></span></div>
-                            <p><span class="discount">26</span>% off</p>
-                        </div>
-
-                        <div class="product-description">
-                            <p class="product-name">Pinapple</p>
-                            <p class="price">
-                                <strong>Price:</strong>
-                                <del>
-                                    <span class="f-product-price">80</span>Rs/pcs
-                                </del>
-                                <ins>
-                                    <span class="f-cur-price">000</span>Rs/pcs
-                                </ins>
-                                <span class="f-product-unit">pcs</span>
-                            </p>
-                            <div class="add-to-cart-btn">
-                                <p><span class="fa-solid fa-cart-plus"></span> Add to Cart</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="product-wrap">
-                        <div class="product-img">
-                            <img src="img/fruits/watermelon.jpg" alt="watermelon_img">
-                        </div>
-
-                        <div class="product-icons">
-                            <div class="add-to-favorite"><span class="fa-solid fa-heart"></span></div>
-                            <p><span class="discount">12</span>% off</p>
-                        </div>
-
-                        <div class="product-description">
-                            <p class="product-name">Watermelon</p>
-                            <p class="price">
-                                <strong>Price:</strong>
-                                <del>
-                                    <span class="f-product-price">350</span>Rs/pcs
-                                </del>
-                                <ins>
-                                    <span class="f-cur-price">000</span>Rs/pcs
-                                </ins>
-                                <span class="f-product-unit">pcs</span>
-                            </p>
-                            <div class="add-to-cart-btn">
-                                <p><span class="fa-solid fa-cart-plus"></span> Add to Cart</p>
-                            </div>
-                        </div>
-                    </div>
+            <!-- vegetables -->
+            <div class="featured-product-wrap vegetables" style="margin-top: 3rem;">
+                <div class="sub-section-title">
+                    <p>Vegetables</p>
+                    <a href="all-products.html">See more <span class="fa-solid fa-angles-right"></span></a>
+                </div>
+                <div class="featured-products" id="vegetables-container">
+                    <!-- Vegetables will be loaded here -->
                 </div>
             </div>
         </div>
@@ -839,7 +482,7 @@
 
                         <div class="fdetails">
                             <p>“If the farmer is rich,
-                                 then so is the nation.”.</p>
+                                then so is the nation.”.</p>
                         </div>
 
                         <div class="social-media-links">
@@ -942,11 +585,12 @@
     </div>
     <!-- footer section end -->
 
-    
+
 
 
     <script src="js/script.js"></script>
 
+    <script src="js/products.js"></script>
 </body>
 
 </html>

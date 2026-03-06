@@ -89,49 +89,48 @@ body {
 
 nav {
     position: absolute;
-    top: 2.4rem;
+    top: 1.5rem;
     left: 50%;
-    -webkit-transform: translateX(-50%);
-    -ms-transform: translateX(-50%);
     transform: translateX(-50%);
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
-    height: 3.6rem;
-    width: 1300px;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
+    height: 4.5rem;
+    width: 95%;
+    max-width: 1400px;
     align-items: center;
-    -webkit-box-pack: justify;
-    -ms-flex-pack: justify;
     justify-content: space-between;
     background: #fff;
-    border-bottom: 1.5px solid #ddd;
-    border-radius: 30px;
-    -webkit-transition: all 0.4s ease;
-    -o-transition: all 0.4s ease;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    border-radius: 50px;
     transition: all 0.4s ease;
-    z-index: 999;
+    z-index: 1000;
+    padding: 0 1.5rem;
 }
 
 nav.active {
     position: fixed;
     top: 0;
-    height: 4rem;
+    left: 0;
+    transform: none;
+    height: 4.5rem;
     width: 100%;
+    max-width: none;
     border-radius: 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 0 4rem;
 }
 
 nav.active .search-box {
-    width: 24rem;
+    width: 20rem;
 }
 
 nav .logo {
-    margin-left: 3rem;
+    margin-left: 1rem;
+    display: flex;
+    align-items: center;
 }
 
 nav.active .logo {
-    margin-left: 4rem;
+    margin-left: 2rem;
 }
 
 nav .logo a {
@@ -142,23 +141,21 @@ nav .logo a {
 }
 
 nav .nav-items {
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
     list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
 .nav-items li {
-    margin-right: 2rem;
+    margin: 0 1rem;
 }
 
 .nav-items li a {
-    color: #2e2e3f;
-    font-size: 1.2rem;
-    font-weight: 500;
+    color: #333;
+    font-size: 1.1rem;
+    font-weight: 600;
     text-decoration: none;
-    -webkit-transition: all 0.3s ease;
-    -o-transition: all 0.3s ease;
     transition: all 0.3s ease;
 }
 
@@ -167,49 +164,39 @@ nav .nav-items {
 }
 
 .search-box {
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
-    height: 2.2rem;
-    width: 18rem;
-    -webkit-transition: all 0.4s ease;
-    -o-transition: all 0.4s ease;
+    height: 2.8rem;
+    width: 15rem;
+    background: #f4f4f4;
+    border-radius: 25px;
+    overflow: hidden;
     transition: all 0.4s ease;
+    border: 1px solid #eee;
 }
 
 .search-box .search-icon {
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
     height: 100%;
-    width: 15%;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
+    width: 3rem;
     align-items: center;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
     justify-content: center;
-    background: #267226;
-    border-radius: 0.1rem 0 0 0.1rem;
+    background: transparent;
 }
 
 .search-box .search-icon span {
-    color: #fff;
-    font-size: 1.2rem;
+    color: #267226;
+    font-size: 1rem;
 }
 
 .search-box input {
-    padding-left: 0.8rem;
     height: 100%;
-    width: 80%;
+    width: 10rem;
     border: none;
     outline: none;
-    color: #2e2e3f;
-    font-size: 1rem;
-    background: #eee;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    border-radius: 0 0.1rem 0.1rem 0;
+    color: #333;
+    font-size: 0.95rem;
+    background: transparent;
+    padding-right: 1rem;
 }
 
 .search-box input::-webkit-input-placeholder {
@@ -233,26 +220,29 @@ nav .nav-items {
 }
 
 nav .icon-links {
-    margin-right: 2.8rem;
-    display: -webkit-box;
-    display: -ms-flexbox;
+    margin-right: 1rem;
     display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
     align-items: center;
+    gap: 0.5rem;
 }
 
-.icon-links div {
+.icon-links > div {
     position: relative;
-    margin-right: 1.6rem;
-
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .icon-links div span {
-    color: #2e2e3f;
+    color: #333;
     cursor: pointer;
-    text-decoration: none;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
+    transition: 0.3s;
+}
+
+.icon-links div span:hover {
+    color: #267226;
 }
 
 .icon-links #search-btn {
@@ -304,7 +294,7 @@ nav .icon-links {
     -webkit-transform: translate(-50%, -50%);
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
-    background: #2e2e3f;
+    background: #333;
     border-radius: 0.2rem;
     -webkit-transition: all 0.2s ease;
     -o-transition: all 0.2s ease;
@@ -318,7 +308,7 @@ nav .icon-links {
     width: 100%;
     top: -8px;
     left: 0;
-    background: #2e2e3f;
+    background: #333;
     border-radius: 0.2rem;
     -webkit-transition: all 0.2s ease;
     -o-transition: all 0.2s ease;
@@ -332,7 +322,7 @@ nav .icon-links {
     width: 100%;
     top: 8px;
     left: 0;
-    background: #2e2e3f;
+    background: #333;
     border-radius: 0.2rem;
     -webkit-transition: all 0.2s ease;
     -o-transition: all 0.2s ease;
@@ -1099,6 +1089,7 @@ input::-webkit-inner-spin-button {
 
 input[type=number] {
     -moz-appearance: textfield;
+    appearance: textfield;
 }
 
 .cart-content .cart-details button {
@@ -1533,6 +1524,7 @@ input::-webkit-inner-spin-button {
 
 input[type=number] {
     -moz-appearance: textfield;
+    appearance: textfield;
 }
 
 .cart-content .cart-details button {
@@ -1782,7 +1774,9 @@ input[type=number] {
 }
 
 .shopping-details .shop-detail {
-    
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .shopping-details div h2 {
@@ -2564,3 +2558,151 @@ footer p a {
 /* ======================
     Footer Section End
 ======================== */
+
+/* =========================
+    Profile Dropdown Area
+=========================== */
+.profile-container {
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
+}
+
+.profile-container .fa-user {
+    font-size: 1.1rem;
+    color: #444;
+    transition: 0.3s;
+}
+
+#login-or-signup {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 38px;
+    width: 38px;
+    border-radius: 50%;
+    background: #f4f4f4;
+    transition: 0.3s;
+}
+
+#login-or-signup:hover {
+    background: #e8f5e9;
+}
+
+#login-or-signup:hover .fa-user {
+    color: #267226;
+}
+
+#login-or-signup a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    width: 300px;
+    background: #fff !important;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    border-radius: 12px;
+    padding: 25px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 10000;
+    border: 1px solid #f0f0f0;
+    text-align: left;
+}
+
+.profile-dropdown.active-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.user-info h3 {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 5px;
+    text-transform: capitalize;
+}
+
+.user-info p {
+    font-size: 0.95rem;
+    color: #444;
+    margin-bottom: 8px;
+    display: block;
+    text-align: left;
+}
+
+.user-info strong {
+    color: #333;
+    font-weight: 600;
+    margin-right: 10px;
+}
+
+.profile-dropdown hr {
+    margin: 15px 0;
+    border: none;
+    border-top: 1px solid #eee;
+}
+
+.profile-links {
+    list-style: none;
+    padding: 0;
+}
+
+.profile-links li {
+    margin-bottom: 15px;
+}
+
+.profile-links li a {
+    text-decoration: none;
+    color: #555;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: 0.2s;
+}
+
+.profile-links li a:hover {
+    color: orangered;
+}
+
+.profile-links li i {
+    width: 20px;
+}
+
+.logout-btn-container {
+    text-align: center;
+}
+
+#logout-btn {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background: #f4f4f4;
+    color: #333;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#logout-btn:hover {
+    background: #fdeaea;
+    color: #d42525;
+}
+
+/* Myntra style hover */
+.profile-container:hover .profile-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="responsive.css">
+    <link rel="stylesheet" href="icon.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Search Results - Farmly</title>
+    <link rel="stylesheet" href="search-results.css">
+</head>
+<body style="padding-top: 70px;">
+    <nav class="navbar active">
+        <div class="logo">
+            <a href="index.html"><span>Farmly</span></a>
+        </div>
+        <ul class="nav-items">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="services.html">Services</a></li>
+            <li><a href="all-products.html">Products</a></li>
+            <li><a href="contactus.html">Contact</a></li>
+        </ul>
+
+        <div class="search-box">
+            <div class="search-icon">
+                <span class="fa-solid fa-magnifying-glass"></span>
+            </div>
+            <input type="text" id="navbar-search-input" placeholder="Search...">
+        </div>
+
+        <div class="icon-links">
+            <div id="search-btn"><span class="fa-solid fa-magnifying-glass"></span></div>
+            <div id="customer-center"><span class="fa-solid fa-phone"></span></div>
+            <div id="icon-shopping-cart"><span class="fa-solid fa-cart-shopping"></span><span id="item-counter">0</span></div>
+            <div class="profile-container" id="profile-container">
+                <div id="login-or-signup"><a href="login.html"><span class="fa-solid fa-user"></span></a></div>
+                <div class="profile-dropdown" id="profile-dropdown">
+                    <div class="user-info">
+                        <p><strong>Username:</strong> <span id="user-name">Welcome!</span></p>
+                        <p><strong>Email:</strong> <span id="user-email"></span></p>
+                        <p><strong>Phone:</strong> <span id="user-phone"></span></p>
+                    </div>
+                    <hr>
+                    <ul class="profile-links">
+                        <li><a href="cart.html"><i class="fa-solid fa-box"></i> Orders</a></li>
+                        <li><a href="cart.html"><i class="fa-solid fa-heart"></i> Wishlist</a></li>
+                        <li><a href="#"><i class="fa-solid fa-gift"></i> Gift Cards</a></li>
+                        <li><a href="contactus.html"><i class="fa-solid fa-headset"></i> Contact Us</a></li>
+                    </ul>
+                    <hr>
+                    <div class="logout-btn-container">
+                        <button id="logout-btn">Logout</button>
+                    </div>
+                </div>
+            </div>
+            <div id="toggle-bar"><span class="toggler"></span></div>
+        </div>
+    </nav>
+
+    <header class="search-results-header">
+        <h1 id="result-text">Results for "<span>...</span>"</h1>
+        <div style="max-width: 600px; margin: 2rem auto; display: flex; gap: 10px; padding: 0 20px;">
+            <input type="text" id="results-search-input" placeholder="Search again..." style="flex: 1; padding: 12px 20px; border-radius: 30px; border: 1px solid #ddd; outline: none;">
+            <button id="results-search-btn" style="padding: 12px 25px; border-radius: 30px; border: none; background: var(--primary); color: white; cursor: pointer; font-weight: bold;">Search</button>
+        </div>
+        <a href="all-products.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to all products</a>
+    </header>
+
+    <main class="results-container">
+        <div class="featured-product-section">
+            <div class="section-wrap">
+                <div class="featured-product-wrap">
+                    <div class="featured-products" id="search-results-grid">
+                        <!-- Search items loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="no-results-msg">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <h2>We couldn't find anything matching your search</h2>
+            <p>Try checking your spelling or using different keywords</p>
+        </div>
+    </main>
+
+    <!-- shopping cart area start -->
+    <div class="shopping-cart-area" id="product-cart-area">
+        <div class="shopping-cart-wrap">
+            <div class="product-cart-menu">
+                <div class="cart-menu-items">
+                    <h2 id="selected-products" class="active-cart-menu">Selected Products</h2>
+                    <h2 id="favorite-products">Favorite Products</h2>
+                </div>
+                <div class="cart-close-btn">
+                    <button>Close Cart</button>
+                </div>
+            </div>
+            <div class="cart-contents-header">
+                <div class="total-cart-items">
+                    <p id="total-selected" class="active-product-counter">
+                        <strong>Total Selected: </strong>
+                        <span>No item found</span>
+                    </p>
+                    <p id="total-favorite">
+                        <strong>Total Favorite: </strong>
+                        <span>No item found</span>
+                    </p>
+                </div>
+                <div class="buying-product-title">
+                    <div class="total-buying-item">
+                        <p>
+                            <strong>Total Buying Items: </strong>
+                            <span id="total-buying-item-counter">0</span>
+                        </p>
+                    </div>
+                    <div class="buy-items-button">
+                        <button id="buy-items">Buy Items</button>
+                    </div>
+                </div>
+            </div>
+            <div class="cart-contents-area shopping-cart-contents-area active-cart-content">
+                <!-- selected product contents -->
+            </div>
+            <div class="cart-wishlist-area shopping-cart-contents-area">
+                <!-- favorite product contents -->
+            </div>
+        </div>
+    </div>
+
+    <!-- confirmation message area start -->
+    <div class="remove-confirmation-message">
+        <div class="remove-message-wrap">
+            <div class="remove-message-title">
+                <h2>Remove item confirmation message</h2>
+            </div>
+            <div class="remove-message-button">
+                <button id="remove-confirm-btn">Remove</button>
+                <button id="remove-cancel-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <div class="popup-shadow"></div>
+
+    <!-- buying details/shoping cart area start -->
+    <div class="buying-details-area">
+        <div class="buying-details-wrap">
+            <div class="shop-title">
+                <h1>Shopping Cart</h1>
+            </div>
+            <div class="shopping-details-wrap">
+                <div class="shopping-details-header">
+                    <div class="shopping-details">
+                        <div class="shop-detail product-sl"><h2>SL No.</h2></div>
+                        <div class="shop-detail product-name"><h2>Product Name</h2></div>
+                        <div class="shop-detail regular-price"><h2>Regular Price</h2></div>
+                        <div class="shop-detail discount"><h2>Discount</h2></div>
+                        <div class="shop-detail present-price"><h2>Present Price</h2></div>
+                        <div class="shop-detail product-quantity"><h2>Quantity</h2></div>
+                        <div class="shop-detail total-amount"><h2>Total Price</h2></div>
+                        <div class="shop-detail remove-all-btn">
+                            <button id="remove-all-items">Remove All</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="shopping-details-content">
+                    <!-- shopping details content -->
+                </div>
+            </div>
+            <div class="buying-details-footer">
+                <div class="calculate-buying-details">
+                    <div class="calculate-total-items">
+                        <h2>Total Items: </h2>
+                        <p><span>000</span></p>
+                    </div>
+                    <div class="calculate-total-quantity">
+                        <h2>Total Quantity: </h2>
+                        <p>total quantity display here</p>
+                    </div>
+                    <div class="calculate-total-amount">
+                        <h2>Total Amount: </h2>
+                        <p><span>000</span> Rs.</p>
+                    </div>
+                </div>
+                <div class="confirm-order-button">
+                    <button id="confirm-order-btn">Confirm Order</button>
+                </div>
+            </div>
+        </div>
+        <div class="close-buy-area">
+            <div id="close-buy-area-btn"></div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script src="js/search-results.js"></script>
+</body>
+</html>

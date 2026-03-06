@@ -1,89 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Admin Dashboard | Farmly</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="admin-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
+
 <body>
 
-<header>
-    <h2>Admin Dashboard</h2>
-    <p>Monitor & Manage Farmly Platform</p>
-</header>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <a href="admin-dashboard.html">Farmly</a>
+            </div>
+            <div class="header-right">
+                <div class="profile-display" id="profileDisplay">
+                    <div class="info-group">
+                        <i class="fa-solid fa-user-shield"></i>
+                        <span id="admin-name">N/A</span>
+                    </div>
+                    <div class="info-group">
+                        <i class="fa-solid fa-crown"></i>
+                        <span id="admin-role">Admin</span>
+                    </div>
+                </div>
+                <div id="authButton">
+                    <a href="login.html" class="login-link">Login</a>
+                </div>
+            </div>
+        </div>
+    </header>
 
-<div class="container">
+    <div class="container">
+        <div class="main-heading">
+            <h1>Admin <span>Dashboard</span></h1>
+            <p>Monitor platform health, approve vendors, and manage quality control.</p>
+        </div>
 
-    <!-- Farmer Approval Section -->
-    <div class="card">
-        <h3>Approve Farmers</h3>
-        <table>
-            <tr>
-                <th>Farmer Name</th>
-                <th>Email</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-            <tr>
-                <td>Ramesh Kumar</td>
-                <td>ramesh@gmail.com</td>
-                <td>Pending</td>
-                <td>
-                    <button class="approve-btn">Approve</button>
-                </td>
-            </tr>
-        </table>
+        <!-- Product Approval Section -->
+        <div class="card">
+            <h3><i class="fa-solid fa-clipboard-check"></i> Pending Product Approvals</h3>
+            <div class="table-container">
+                <table id="pendingTable">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Product Name</th>
+                            <th>Farmer</th>
+                            <th>Price</th>
+                            <th>Category</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pendingList">
+                        <!-- Pending products will loop here -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="noPendingMsg" class="empty-msg" style="display:none;">No pending products.</div>
+        </div>
+
+        <!-- User Management Section -->
+        <div class="card">
+            <h3><i class="fa-solid fa-users-gear"></i> Manage Users</h3>
+            <div class="table-container">
+                <table id="userTable">
+                    <thead>
+                        <tr>
+                            <th>User Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userList">
+                        <!-- Users will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Farmer Approval Section -->
+        <div class="card">
+            <h3><i class="fa-solid fa-address-card"></i> Approve Farmers</h3>
+            <div class="table-container">
+                <table id="farmerTable">
+                    <thead>
+                        <tr>
+                            <th>Farmer Name</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="farmerList">
+                        <!-- Farmers will loop here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 
-    <!-- User Management Section -->
-    <div class="card">
-        <h3>Manage Users</h3>
-        <table>
-            <tr>
-                <th>User Name</th>
-                <th>Role</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-            <tr>
-                <td>Aditya</td>
-                <td>Customer</td>
-                <td>Active</td>
-                <td>
-                    <button class="block-btn">Block</button>
-                </td>
-            </tr>
-        </table>
-    </div>
-
-    <!-- Order Monitoring Section -->
-    <div class="card">
-        <h3>Order Monitoring</h3>
-        <table>
-            <tr>
-                <th>Order ID</th>
-                <th>Customer</th>
-                <th>Farmer</th>
-                <th>Status</th>
-            </tr>
-            <tr>
-                <td>#ORD101</td>
-                <td>Rahul</td>
-                <td>Suresh</td>
-                <td>Shipped</td>
-            </tr>
-        </table>
-    </div>
-
-    <!-- Reports Section -->
-    <div class="card">
-        <h3>Generate Reports</h3>
-        <button>Download Sales Report</button>
-        <button>Download User Report</button>
-    </div>
-
-</div>
+    <script src="admin.js"></script>
 
 </body>
+
 </html>

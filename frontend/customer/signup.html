@@ -1,37 +1,79 @@
 <!DOCTYPE html>
-<html>
-<head>
-	<title>Sign Up</title>
-      <link rel="stylesheet" href="signupstyle.css">
-	
-</head>
-<body>
-      <h1>Sign Up</h1>
-	<form id="signup-form">
-            
-		<!-- <label for="email">Email:</label>
-		<input type="email" id="email" name="email" required>
-		<label for="password">Password:</label>
-		<input type="password" id="password" name="password" required>
-		<button type="submit">Sign Up</button>-->
+<html lang="en">
 
-            <label for="name">Username</label>
-            <br>
-            <input type="text" id="username" name="username" required>
-            <br>
-            <label for="email">Email</label>
-            <br>
-            <input type="email" id="email" name="email" required>
-            <br>
-            <label for="password">Password</label>
-            <br>     
-            <input type="password" id="password" name="password" required>
-            <br>
-            <label for="confirm-password">Confirm Password</label>
-            <br>
-            <input type="password" id="confirm-password" name="confirm-password" required>
-            <br>
-            <button type="submit">Sign Up</button>
-	</form>
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Customer Sign Up | Farmly</title>
+      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+      <link rel="stylesheet" href="../css/signup.css">
+</head>
+
+<body>
+      <div class="signup-container">
+            <h2>Create Account</h2>
+            <form id="customerSignupForm">
+                  <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" placeholder="Choose a username" required>
+                  </div>
+                  <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="Enter your email" required>
+                  </div>
+                  <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" placeholder="Enter your phone number" required>
+                  </div>
+                  <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="Create a password" required>
+                  </div>
+                  <div class="form-group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+                  </div>
+                  <button type="submit">Join Farmly</button>
+            </form>
+            <div class="links">
+                  Already have an account? <a href="login.html">Login here</a>
+                  <a href="../login.html" class="back-link">← Back to Portal</a>
+            </div>
+      </div>
+
+      <script>
+            document.getElementById("customerSignupForm").addEventListener("submit", async (e) => {
+                  e.preventDefault();
+                  const username = document.getElementById("username").value;
+                  const email = document.getElementById("email").value;
+                  const phone = document.getElementById("phone").value;
+                  const password = document.getElementById("password").value;
+                  const confirmPassword = document.getElementById("confirmPassword").value;
+
+                  if (password !== confirmPassword) {
+                        alert("Passwords do not match!");
+                        return;
+                  }
+
+                  try {
+                        const response = await fetch("http://localhost:5000/api/customer/register", {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({ username, email, password, phone })
+                        });
+                        const data = await response.json();
+
+                        if (response.ok) {
+                              alert("Registration Successful!");
+                              window.location.href = "login.html";
+                        } else {
+                              alert(data.message || "Registration Failed");
+                        }
+                  } catch (err) {
+                        alert("Server Error. Ensure Backend is running.");
+                  }
+            });
+      </script>
 </body>
+
 </html>

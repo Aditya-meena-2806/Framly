@@ -1,15 +1,61 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Our Services</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Services | Farmly</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" type="text/css" href="services.css">
   </head>
-  <body>
-    <header>
-      <h1>Our Services</h1>
-    </header>
+  <body style="padding-top: 80px;">
+    <nav class="navbar active">
+        <div class="logo">
+            <a href="index.html"><span>Farmly</span></a>
+        </div>
+
+        <ul class="nav-items">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="services.html" style="color: orangered;">Services</a></li>
+            <li><a href="all-products.html">Products</a></li>
+            <li><a href="contactus.html">Contact</a></li>
+        </ul>
+
+        <div class="search-box">
+            <div class="search-icon">
+                <span class="fa-solid fa-magnifying-glass"></span>
+            </div>
+            <input type="text" id="navbar-search-input" placeholder="Search...">
+        </div>
+
+        <div class="icon-links">
+            <div id="search-btn"><span class="fa-solid fa-magnifying-glass"></span></div>
+            <div id="customer-center"><span class="fa-solid fa-phone"></span></div>
+            <div id="icon-shopping-cart"><span class="fa-solid fa-cart-shopping"></span><span id="item-counter">0</span></div>
+            <div class="profile-container" id="profile-container">
+                <div id="login-or-signup"><a href="login.html"><span class="fa-solid fa-user"></span></a></div>
+                <div class="profile-dropdown" id="profile-dropdown">
+                    <div class="user-info">
+                        <p><strong>Username:</strong> <span id="user-name">Welcome!</span></p>
+                        <p><strong>Email:</strong> <span id="user-email"></span></p>
+                        <p><strong>Phone:</strong> <span id="user-phone"></span></p>
+                    </div>
+                    <hr>
+                    <ul class="profile-links">
+                        <li><a href="cart.html"><i class="fa-solid fa-box"></i> Orders</a></li>
+                        <li><a href="cart.html"><i class="fa-solid fa-heart"></i> Wishlist</a></li>
+                        <li><a href="#"><i class="fa-solid fa-gift"></i> Gift Cards</a></li>
+                        <li><a href="contactus.html"><i class="fa-solid fa-headset"></i> Contact Us</a></li>
+                    </ul>
+                    <hr>
+                    <div class="logout-btn-container">
+                        <button id="logout-btn">Logout</button>
+                    </div>
+                </div>
+            </div>
+            <div id="toggle-bar"><span class="toggler"></span></div>
+        </div>
+    </nav>
     <main>
       <section>
         <h2>Delivery Service</h2>
@@ -27,5 +73,6 @@
     <footer>
       <p>&copy; 2025 Our Services Page. All rights reserved.</p>
     </footer>
+    <script src="js/script.js"></script>
   </body>
 </html>

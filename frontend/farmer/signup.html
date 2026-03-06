@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Sign Up | Farmly</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/signup.css">
+</head>
+
+<body>
+    <div class="signup-container">
+        <h2>Farmer Registration</h2>
+        <form id="farmerSignupForm">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" placeholder="Enter your full name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" placeholder="Enter your phone number" required>
+            </div>
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" id="location" placeholder="City, State" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Create a password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+            </div>
+            <button type="submit">Create Farmer Account</button>
+        </form>
+        <div class="links">
+            Already have an account? <a href="farmerLogin.html">Login here</a>
+            <a href="../login.html" class="back-link">← Back to Portal</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("farmerSignupForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const phone = document.getElementById("phone").value;
+            const location = document.getElementById("location").value;
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+
+            if (password !== confirmPassword) {
+                alert("Passwords do not match!");
+                return;
+            }
+
+            try {
+                const response = await fetch("http://localhost:5000/api/farmer/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, email, password, phone, location })
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert("Registration Successful! Please wait for Admin approval before logging in.");
+                    window.location.href = "farmerLogin.html";
+                } else {
+                    alert(data.error || data.message || "Registration Failed");
+                }
+            } catch (err) {
+                alert("Server Error. Ensure Backend is running.");
+            }
+        });
+    </script>
+</body>
+
+</html>
