@@ -5,7 +5,7 @@
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Customer Sign Up | Farmly</title>
-      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+      <!-- Font link removed -->
       <link rel="stylesheet" href="../css/signup.css">
 </head>
 
@@ -49,6 +49,15 @@
                   const phone = document.getElementById("phone").value;
                   const password = document.getElementById("password").value;
                   const confirmPassword = document.getElementById("confirmPassword").value;
+
+                  // Email Validation Logic (Strictly @gmail.com)
+                  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                  const emailLower = email.toLowerCase();
+                  
+                  if (!emailRegex.test(email) || !emailLower.endsWith('@gmail.com')) {
+                        alert("Invalid Email ID! Please enter a valid @gmail.com address.");
+                        return;
+                  }
 
                   if (password !== confirmPassword) {
                         alert("Passwords do not match!");

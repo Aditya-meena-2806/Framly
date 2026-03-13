@@ -144,6 +144,7 @@ body {
     font-size: 1.4rem;
     font-weight: bold;
     text-align: center;
+    text-transform: uppercase;
 }
 
 .product-description .price {

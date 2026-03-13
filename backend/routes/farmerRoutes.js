@@ -4,6 +4,7 @@ const Farmer = require("../models/Farmer");
 const Product = require("../models/Product");
 const fs = require("fs");
 const path = require("path");
+const { isValidEmail, sendEmail, registrationEmailTemplate } = require("../utils/emailService");
 
 // Helper to save base64 image
 const saveImage = (base64Data) => {
@@ -28,8 +29,24 @@ const saveImage = (base64Data) => {
 router.post("/register", async (req, res) => {
     try {
         const { name, email, password, location, phone } = req.body;
+
+        // Precision Email Validation
+        if (!isValidEmail(email)) {
+            return res.status(400).json({ message: "Invalid email format. Please provide a real email address." });
+        }
+
         const farmer = new Farmer({ name, email, password, location, phone });
         await farmer.save();
+
+        // Send Registration Email (Backgrounded)
+        console.log(`FARMER REGISTRATION EMAIL TRIGGER: User ${email}`);
+        sendEmail(
+            email,
+            "Welcome to Farmly - Farmer Registration Received",
+            registrationEmailTemplate(name)
+        ).then(info => console.log(`FARMER EMAIL SENT: ID ${info.messageId}`))
+         .catch(err => console.error("FARMER EMAIL ERROR:", err.message));
+
         res.json({ message: "Farmer registered successfully (waiting for admin approval)" });
     } catch (err) {
         res.status(400).json({ error: err.message });

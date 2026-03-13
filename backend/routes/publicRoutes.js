@@ -16,7 +16,11 @@ router.get("/products", async (req, res) => {
         }
 
         const products = await Product.find(query).populate("farmerId", "name location");
-        res.json(products);
+        
+        // Filter out products where the farmer no longer exists (orphaned products)
+        const validProducts = products.filter(p => p.farmerId !== null);
+        
+        res.json(validProducts);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

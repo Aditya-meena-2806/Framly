@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
+const { isValidEmail, sendEmail, registrationEmailTemplate } = require("../utils/emailService");
 
 // Customer Registration
 router.post("/register", async (req, res) => {
@@ -14,6 +15,11 @@ router.post("/register", async (req, res) => {
             return res.status(400).json({ message: "All fields are required" });
         }
 
+        // Precision Email Validation
+        if (!isValidEmail(email)) {
+            return res.status(400).json({ message: "Invalid email format. Please provide a real email address." });
+        }
+
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ message: "User already exists" });
@@ -21,6 +27,15 @@ router.post("/register", async (req, res) => {
 
         const user = new User({ name: username, email, password, phone });
         await user.save();
+
+        // Send Registration Email (Backgrounded)
+        console.log(`REGISTRATION EMAIL TRIGGER: Attempting to send welcome email to ${email}`);
+        sendEmail(
+            email,
+            "Welcome to Farmly - Registration Successful",
+            registrationEmailTemplate(username)
+        ).then(info => console.log(`REGISTRATION EMAIL SENT: ID ${info.messageId}`))
+         .catch(err => console.error("REGISTRATION EMAIL ERROR:", err.message));
 
         res.json({ message: "Registration Successful", userId: user._id, name: user.name });
     } catch (err) {

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Averia+Serif+Libre:wght@300;400;700&family=Poppins:wght@300;400;600&display=swap');
+/* Font changed to Helvetica */
 
 :root {
     --primary: #2c3e50;
@@ -19,7 +19,7 @@
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Helvetica', 'Arial', sans-serif;
     background: var(--bg);
     color: var(--text);
     line-height: 1.6;
@@ -45,7 +45,7 @@ header {
 }
 
 .logo a {
-    font-family: 'Averia Serif Libre', cursive;
+    font-family: 'Helvetica', 'Arial', sans-serif;
     color: var(--white);
     font-size: 1.8rem;
     font-weight: bold;
@@ -108,7 +108,7 @@ header {
 }
 
 .main-heading h1 {
-    font-family: 'Averia Serif Libre', cursive;
+    font-family: 'Helvetica', 'Arial', sans-serif;
     font-size: 3rem;
     color: var(--primary);
 }
@@ -134,7 +134,7 @@ header {
 }
 
 .card h3 {
-    font-family: 'Averia Serif Libre', cursive;
+    font-family: 'Helvetica', 'Arial', sans-serif;
     font-size: 1.8rem;
     color: var(--primary);
     margin-bottom: 25px;

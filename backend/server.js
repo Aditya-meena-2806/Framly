@@ -8,6 +8,7 @@ const farmerRoutes = require("./routes/farmerRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const publicRoutes = require("./routes/publicRoutes");
 const customerRoutes = require("./routes/customerRoutes");
+const orderRoutes = require("./routes/orderRoutes");
 
 // Load env vars
 dotenv.config({ path: path.join(__dirname, ".env") });
@@ -27,6 +28,7 @@ app.use("/api/farmer", farmerRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/public", publicRoutes);
 app.use("/api/customer", customerRoutes);
+app.use("/api/order", orderRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

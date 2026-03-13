@@ -4,6 +4,7 @@ const Product = require("../models/Product");
 const Farmer = require("../models/Farmer");
 
 const Admin = require("../models/Admin");
+const { sendEmail, farmerApprovalEmailTemplate } = require("../utils/emailService");
 
 // Admin Login
 router.post("/login", async (req, res) => {
@@ -115,8 +116,20 @@ router.get("/farmers", async (req, res) => {
 // Approve Farmer
 router.put("/approve-farmer/:id", async (req, res) => {
     try {
-        await Farmer.findByIdAndUpdate(req.params.id, { approved: true });
-        res.json({ message: "Farmer Approved" });
+        const farmer = await Farmer.findByIdAndUpdate(req.params.id, { approved: true });
+        
+        if (farmer && farmer.email) {
+            // Send Approval Email (Backgrounded)
+            console.log(`ADMIN EMAIL TRIGGER: Attempting to send farmer approval email to ${farmer.email}`);
+            sendEmail(
+                farmer.email,
+                "Farmly - Farmer Account Approved!",
+                farmerApprovalEmailTemplate(farmer.name)
+            ).then(info => console.log(`ADMIN EMAIL SENT: ID ${info.messageId}`))
+             .catch(err => console.error("ADMIN EMAIL ERROR:", err.message));
+        }
+
+        res.json({ message: "Farmer Approved and notification sent" });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -139,6 +152,23 @@ router.put("/block-user/:id", async (req, res) => {
         user.isBlocked = !user.isBlocked;
         await user.save();
         res.json({ message: `User ${user.isBlocked ? 'Blocked' : 'Unblocked'}` });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Delete Farmer and their Products
+router.delete("/farmer/:id", async (req, res) => {
+    try {
+        const farmerId = req.params.id;
+        
+        // 1. Delete all products associated with this farmer
+        await Product.deleteMany({ farmerId });
+        
+        // 2. Delete the farmer account
+        await Farmer.findByIdAndDelete(farmerId);
+        
+        res.json({ message: "Farmer and all associated products removed successfully" });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

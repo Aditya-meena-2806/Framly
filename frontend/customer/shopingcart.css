@@ -886,7 +886,7 @@ input[type=number] {
     padding-bottom: 0.10rem;
     position: relative;
     color: white;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-family: 'Helvetica', 'Arial', sans-serif;
     font-size: 40px;
     text-align: center;
     text-transform: uppercase;

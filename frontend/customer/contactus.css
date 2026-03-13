@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Averia+Serif+Libre:wght@300;400;700&display=swap');
+/* Font changed to Helvetica */
 
 :root {
     --primary-color: #267226;
@@ -18,7 +18,7 @@
 }
 
 body {
-    font-family: 'Averia Serif Libre', cursive, sans-serif;
+    font-family: 'Helvetica', 'Arial', sans-serif;
     color: var(--text-color);
     background-color: #fdfdfd;
     line-height: 1.6;

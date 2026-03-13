@@ -28,25 +28,38 @@ async function loadAllProducts() {
 
         products.forEach(p => {
             const imageUrl = p.image ? `http://localhost:5000${p.image}` : 'img/fruits/apple.jpg';
+            const unit = p.unit || 'kg';
+            const farmerName = (p.farmerId && p.farmerId.name) ? p.farmerId.name : 'Unknown Farmer';
+
             const productHTML = `
                 <div class="product-wrap">
                     <div class="product-img">
                         <img src="${imageUrl}" alt="${p.name}">
                     </div>
                     <div class="product-icons">
-                        <div class="add-to-favorite" onclick="toggleFavorite(this, '${p.name}', ${p.price}, '${p.unit}', '${imageUrl}')"><span class="fa-solid fa-heart"></span></div>
+                        <div class="add-to-favorite" onclick="toggleFavorite(this, '${p.name}', ${p.price}, '${unit}', '${imageUrl}', '${p._id}')"><span class="fa-solid fa-heart"></span></div>
                     </div>
                     <div class="product-description">
                         <p class="product-name">${p.name}</p>
+                        <p class="seller-name">Sold by: <strong>${farmerName}</strong></p>
+                        <p class="stock-level ${p.quantity <= 5 ? 'low-stock' : ''}">
+                            Quantity left: <strong>${p.quantity} ${unit}</strong>
+                        </p>
                         <p class="price">
                             <strong>Price:</strong>
                             <ins>
-                                <span class="f-cur-price">${p.price}</span>Rs/${p.unit}
+                                <span class="f-cur-price">${p.price}</span>Rs/${unit}
                             </ins>
                         </p>
-                        <div class="add-to-cart-btn" onclick="addToCart(this, '${p.name}', ${p.price}, '${p.unit}', '${imageUrl}')">
+                        ${p.quantity > 0 ? `
+                        <div class="add-to-cart-btn" onclick="addToCart(this, '${p.name}', ${p.price}, '${unit}', '${imageUrl}', '${p._id}', '${farmerName.replace(/'/g, "\\'")}', ${p.quantity})">
                             <p><span class="fa-solid fa-cart-plus"></span> Add to Cart</p>
                         </div>
+                        ` : `
+                        <div class="add-to-cart-btn disabled" style="opacity: 0.5; cursor: not-allowed;">
+                            <p style="background: grey;"><span class="fa-solid fa-circle-xmark"></span> Out of Stock</p>
+                        </div>
+                        `}
                     </div>
                 </div>
             `;
