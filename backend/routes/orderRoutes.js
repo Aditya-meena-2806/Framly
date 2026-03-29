@@ -37,9 +37,35 @@ router.post("/place", async (req, res) => {
 
         // Decrease stock
         for (const item of items) {
-            await Product.findByIdAndUpdate(item.productId, {
+             const updatedProduct = await Product.findByIdAndUpdate(item.productId, {
                 $inc: { quantity: -item.quantity }
-            });
+            }, { new: true }).populate('farmerId');
+
+            // --- Real-time Stock Alert System (Farmer Side) ---
+            if (updatedProduct.quantity <= 0) {
+                const farmer = updatedProduct.farmerId;
+                if (farmer) {
+                    console.log(`STOCK ALERT: Product "${updatedProduct.name}" is out of stock! Sending alert to farmer ${farmer.email}`);
+                    
+                    // Create In-App Notification
+                    const Notification = require("../models/Notification");
+                    const notification = new Notification({
+                        farmerId: farmer._id,
+                        productId: updatedProduct._id,
+                        productName: updatedProduct.name,
+                        message: `Your product "${updatedProduct.name}" is now OUT OF STOCK! Please restock soon.`
+                    });
+                    notification.save().catch(err => console.error("Notification Save error:", err));
+
+                    // Send Email Alert
+                    const { outOfStockEmailTemplate } = require("../utils/emailService");
+                    sendEmail(
+                        farmer.email,
+                        `STOCK ALERT: ${updatedProduct.name} is Out of Stock`,
+                        outOfStockEmailTemplate(farmer.name, updatedProduct.name)
+                    ).catch(err => console.error("FARMER STOCK ALERT EMAIL ERROR:", err.message));
+                }
+            }
         }
         // ----------------------------------
 

@@ -6,11 +6,11 @@ const { isValidEmail, sendEmail, registrationEmailTemplate } = require("../utils
 // Customer Registration
 router.post("/register", async (req, res) => {
     try {
-        const { username, email, password, phone } = req.body;
-        console.log("REGISTRATION DATA RECEIVED:", { username, email, phone });
+        const { username, email, password, phone, address } = req.body;
+        console.log("REGISTRATION DATA RECEIVED:", { username, email, phone, address });
 
         // Basic validation
-        if (!username || !email || !password || !phone) {
+        if (!username || !email || !password || !phone || !address) {
             console.log("REGISTRATION FAILED: Missing fields");
             return res.status(400).json({ message: "All fields are required" });
         }
@@ -25,7 +25,7 @@ router.post("/register", async (req, res) => {
             return res.status(400).json({ message: "User already exists" });
         }
 
-        const user = new User({ name: username, email, password, phone });
+        const user = new User({ name: username, email, password, phone, address });
         await user.save();
 
         // Send Registration Email (Backgrounded)
@@ -66,7 +66,8 @@ router.post("/login", async (req, res) => {
             userId: user._id, 
             name: user.name, 
             email: user.email,
-            phone: user.phone 
+            phone: user.phone,
+            address: user.address 
         });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -84,7 +85,8 @@ router.get("/profile/:id", async (req, res) => {
             version: "v4_robust",
             name: user.name || "N/A",
             email: user.email || "N/A",
-            phone: user.phone || "N/A"
+            phone: user.phone || "N/A",
+            address: user.address || "N/A"
         });
     } catch (err) {
         console.error("Profile Fetch Error for ID:", req.params.id, err);

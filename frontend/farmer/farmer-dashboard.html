@@ -32,6 +32,10 @@
                         <i class="fa-solid fa-phone"></i>
                         <span id="farmer-phone">N/A</span>
                     </div>
+                    <div class="info-group">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <span id="farmer-location">N/A</span>
+                    </div>
                 </div>
                 <div id="authButton">
                     <a href="farmerLogin.html" class="login-link">Login</a>
@@ -43,9 +47,40 @@
     <div class="container">
         <div class="main-heading">
             <h1>Farmer <span>Dashboard</span></h1>
-            <p>Manage your crops, track orders, and grow your farm business.</p>
         </div>
 
+        <!-- Inventory Summary Row -->
+        <div class="summary-row">
+            <div class="card summary-card total">
+                <div class="card-icon"><i class="fa-solid fa-layer-group"></i></div>
+                <div class="card-info">
+                    <h4>Total Products</h4>
+                    <h2 id="total-count">0</h2>
+                </div>
+            </div>
+            <div class="card summary-card available">
+                <div class="card-icon"><i class="fa-solid fa-check-circle"></i></div>
+                <div class="card-info">
+                    <h4>Available Items</h4>
+                    <h2 id="available-count">0</h2>
+                </div>
+            </div>
+            <div class="card summary-card out-of-stock">
+                <div class="card-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
+                <div class="card-info">
+                    <h4>Out of Stock</h4>
+                    <h2 id="out-of-stock-count">0</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notifications Section -->
+        <div class="card" id="notificationsCard" style="border-left: 5px solid #d32f2f; display: none;">
+            <h3><i class="fa-solid fa-bell"></i> Stock Notifications</h3>
+            <div id="notificationsList">
+                <!-- Notifications will load here -->
+            </div>
+        </div>
 
         <!-- Add Product Section -->
         <div class="card">
@@ -69,24 +104,42 @@
         <!-- Product List Section -->
         <div class="card">
             <h3>Your Products</h3>
-            <table id="productsTable">
-                <thead>
-                    <tr>
-                        <th>Image</th>
-                        <th>Product</th>
-                        <th>Price (₹)</th>
-                        <th>Quantity</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="productList">
-                    <!-- Products will be loaded here -->
-                </tbody>
-            </table>
+            <div style="overflow-x: auto;">
+                <table id="productsTable">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Product</th>
+                            <th>Price (₹)</th>
+                            <th>Quantity</th>
+                            <th>Status/Stock</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productList">
+                        <!-- Products will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
         </div>
 
+    </div>
 
+    <!-- Restock Modal -->
+    <div id="restockModal" style="display:none; position:fixed; z-index:1001; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.5);">
+        <div style="background:white; margin:15% auto; padding:20px; border-radius:10px; max-width:400px; text-align:center;">
+            <h3>Restock Product</h3>
+            <p id="restockProductName" style="font-weight:bold; margin-bottom: 5px;"></p>
+            <p id="currentStockDisplay" style="font-size: 0.9rem; color: #666;"></p>
+            <div style="margin: 20px 0;">
+                <label for="newQuantity" style="display: block; margin-bottom: 8px; font-weight: 500;">Units to add:</label>
+                <input type="number" id="newQuantity" placeholder="e.g. 10" style="width:80%; padding:10px; border: 1px solid #ddd; border-radius: 5px;">
+            </div>
+            <div style="display:flex; justify-content:center; gap:10px;">
+                <button id="confirmRestock" style="background:#2e7d32; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-weight: bold;">Confirm Restock</button>
+                <button id="cancelRestock" style="background:#999; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer;">Cancel</button>
+            </div>
+        </div>
     </div>
     <script src="farmer.js"></script>
 

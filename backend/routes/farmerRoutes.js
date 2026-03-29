@@ -72,7 +72,8 @@ router.post("/login", async (req, res) => {
             farmerId: farmer._id,
             name: farmer.name,
             email: farmer.email,
-            phone: farmer.phone || "N/A"
+            phone: farmer.phone || "N/A",
+            location: farmer.location || "N/A"
         });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -89,7 +90,8 @@ router.get("/profile/:id", async (req, res) => {
         res.json({
             name: farmer.name,
             email: farmer.email,
-            phone: farmer.phone || "N/A"
+            phone: farmer.phone || "N/A",
+            location: farmer.location || "N/A"
         });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -134,11 +136,41 @@ router.get("/products/:farmerId", async (req, res) => {
 });
 
 
-//  Delete Product
-router.delete("/delete-product/:id", async (req, res) => {
+// Update Product Stock (Restock) - Additive
+router.patch("/update-product-stock/:id", async (req, res) => {
     try {
-        await Product.findByIdAndDelete(req.params.id);
-        res.json({ message: "Product deleted successfully" });
+        const { quantity } = req.body;
+        // Use $inc to add the quantity to current stock
+        const product = await Product.findByIdAndUpdate(
+            req.params.id, 
+            { $inc: { quantity: Number(quantity) } }, 
+            { new: true }
+        );
+        res.json({ message: "Stock added successfully", product });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Mark Product as Out of Stock Manually
+router.patch("/mark-out-of-stock/:id", async (req, res) => {
+    try {
+        const product = await Product.findByIdAndUpdate(req.params.id, { quantity: 0 }, { new: true }).populate('farmerId');
+        
+        // Optional: Send alert even on manual mark
+        const farmer = product.farmerId;
+        if (farmer) {
+            const Notification = require("../models/Notification");
+            const notification = new Notification({
+                farmerId: farmer._id,
+                productId: product._id,
+                productName: product.name,
+                message: `You manually marked "${product.name}" as OUT OF STOCK.`
+            });
+            await notification.save();
+        }
+
+        res.json({ message: "Product marked as out of stock", product });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

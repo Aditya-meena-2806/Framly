@@ -26,6 +26,10 @@
                         <input type="tel" id="phone" placeholder="Enter your phone number" required>
                   </div>
                   <div class="form-group">
+                        <label for="address">Address</label>
+                        <textarea id="address" placeholder="Enter your full address" required rows="3"></textarea>
+                  </div>
+                  <div class="form-group">
                         <label for="password">Password</label>
                         <input type="password" id="password" placeholder="Create a password" required>
                   </div>
@@ -47,6 +51,7 @@
                   const username = document.getElementById("username").value;
                   const email = document.getElementById("email").value;
                   const phone = document.getElementById("phone").value;
+                  const address = document.getElementById("address").value;
                   const password = document.getElementById("password").value;
                   const confirmPassword = document.getElementById("confirmPassword").value;
 
@@ -68,7 +73,7 @@
                         const response = await fetch("http://localhost:5000/api/customer/register", {
                               method: "POST",
                               headers: { "Content-Type": "application/json" },
-                              body: JSON.stringify({ username, email, password, phone })
+                              body: JSON.stringify({ username, email, password, phone, address })
                         });
                         const data = await response.json();
 

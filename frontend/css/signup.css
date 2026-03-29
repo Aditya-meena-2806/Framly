@@ -66,7 +66,7 @@ label {
     font-size: 14px;
 }
 
-input {
+input, textarea {
     width: 100%;
     padding: 12px 15px;
     border: 1.5px solid #ddd;
@@ -75,9 +75,10 @@ input {
     box-sizing: border-box;
     transition: all 0.3s ease;
     background: #fdfdfd;
+    font-family: inherit;
 }
 
-input:focus {
+input:focus, textarea:focus {
     outline: none;
     border-color: var(--primary-color);
     box-shadow: 0 0 8px rgba(46, 125, 50, 0.2);

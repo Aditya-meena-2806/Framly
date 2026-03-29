@@ -174,4 +174,35 @@ router.delete("/farmer/:id", async (req, res) => {
     }
 });
 
+// Get All Orders (Optionally filtered by User)
+router.get("/orders", async (req, res) => {
+    try {
+        const { userId } = req.query;
+        const filter = userId ? { userId } : {};
+        
+        const Order = require("../models/Order");
+        const orders = await Order.find(filter)
+            .populate("userId", "name email")
+            .sort({ createdAt: -1 });
+        res.json(orders);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Get All Products (Optionally filtered by Farmer)
+router.get("/products", async (req, res) => {
+    try {
+        const { farmerId } = req.query;
+        const filter = farmerId ? { farmerId } : {};
+
+        const products = await Product.find(filter)
+            .populate("farmerId", "name email")
+            .sort({ createdAt: -1 });
+        res.json(products);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 module.exports = router;

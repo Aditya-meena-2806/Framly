@@ -154,10 +154,36 @@ const farmerApprovalEmailTemplate = (name) => `
     </div>
 `;
 
+/**
+ * Email Template for Out of Stock Notification
+ */
+const outOfStockEmailTemplate = (name, productName) => `
+    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
+        <div style="text-align: center; background-color: #d32f2f; padding: 10px; border-radius: 10px 10px 0 0;">
+            <h1 style="color: white; margin: 0;">Stock Alert!</h1>
+        </div>
+        <div style="padding: 20px; color: #333;">
+            <p>Dear <strong>${name}</strong>,</p>
+            <p>This is an automated notification to let you know that your product <strong>"${productName}"</strong> is now <strong>OUT OF STOCK</strong>.</p>
+            <p>Customers will no longer be able to purchase this item until you restock it.</p>
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/farmer/farmer-dashboard.html" style="background-color: #d32f2f; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Restock Now</a>
+            </div>
+            <p>To restock, log in to your dashboard and update the product quantity.</p>
+            <br>
+            <p>Best Regards,<br>The Farmly Team</p>
+        </div>
+        <div style="text-align: center; padding: 10px; font-size: 12px; color: #777;">
+            &copy; 2026 Farmly. All Rights Reserved.
+        </div>
+    </div>
+`;
+
 module.exports = {
     isValidEmail,
     sendEmail,
     registrationEmailTemplate,
     orderEmailTemplate,
-    farmerApprovalEmailTemplate
+    farmerApprovalEmailTemplate,
+    outOfStockEmailTemplate
 };

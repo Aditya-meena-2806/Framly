@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Farmer Product History | Farmly Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="admin-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo"><a href="admin-dashboard.html">Farmly Admin</a></div>
+            <div class="header-right">
+                <a href="admin-dashboard.html" style="color:white; text-decoration:none; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="main-heading">
+            <h1 id="historyTitle">Farmer <span>Product History</span></h1>
+            <p id="historySub">Comprehensive record of all products on the platform.</p>
+        </div>
+
+        <div class="card">
+            <div class="table-container">
+                <table id="historyTable">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Farmer</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyList"></tbody>
+                </table>
+            </div>
+            <div id="noDataMsg" class="empty-msg" style="display:none; text-align:center; padding:40px; color:#888;">
+                <i class="fa-solid fa-boxes-stacked" style="font-size:3rem; margin-bottom:15px; display:block;"></i>
+                No product history found.
+            </div>
+        </div>
+    </div>
+
+    <script src="admin-history.js"></script>
+</body>
+</html>

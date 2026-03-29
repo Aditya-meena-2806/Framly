@@ -2,6 +2,73 @@
 
 // Inject global cart elements if missing
 (function() {
+    // ---- Global Navbar Injection ----
+    const navbarPlaceholder = document.getElementById('navbar-placeholder');
+    if (navbarPlaceholder) {
+        navbarPlaceholder.innerHTML = `
+        <nav class="navbar">
+            <div class="logo">
+                <a href="index.html"><span>Farmly</span></a>
+            </div>
+            <ul class="nav-items">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="all-products.html">Products</a></li>
+                <li><a href="contactus.html">Contact</a></li>
+            </ul>
+            <div class="search-box">
+                <div class="search-icon"><span class="fa-solid fa-magnifying-glass"></span></div>
+                <input type="text" id="navbar-search-input" placeholder="Search...">
+            </div>
+            <div class="icon-links">
+                <div id="search-btn"><span class="fa-solid fa-magnifying-glass"></span></div>
+                <div id="customer-center"><span class="fa-solid fa-phone"></span></div>
+                <div id="icon-shopping-cart"><span class="fa-solid fa-cart-shopping"></span><span id="item-counter">0</span></div>
+                <div class="profile-container" id="profile-container">
+                    <div id="login-or-signup"><a href="login.html"><span class="fa-solid fa-user"></span></a></div>
+                    <div class="profile-dropdown" id="profile-dropdown">
+                        <div class="user-info">
+                            <p><strong>Username:</strong> <span id="user-name">Welcome!</span></p>
+                            <p><strong>Email:</strong> <span id="user-email"></span></p>
+                            <p><strong>Phone:</strong> <span id="user-phone"></span></p>
+                            <p><strong>Address:</strong> <span id="user-address"></span></p>
+                        </div>
+                        <hr>
+                        <ul class="profile-links">
+                            <li><a href="order-history.html"><i class="fa-solid fa-clock-rotate-left"></i> Order History</a></li>
+                            <li><a href="cart.html"><i class="fa-solid fa-heart"></i> Wishlist</a></li>
+                            <li><a href="#"><i class="fa-solid fa-gift"></i> Gift Cards</a></li>
+                            <li><a href="contactus.html"><i class="fa-solid fa-headset"></i> Contact Us</a></li>
+                        </ul>
+                        <hr>
+                        <div class="logout-btn-container">
+                            <button id="logout-btn">Logout</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="toggle-bar"><span class="toggler"></span></div>
+            </div>
+        </nav>`;
+
+        // Re-run the scroll logic OR manually trigger it to ensure navbar is 'active' on non-home pages
+        const injectedNav = navbarPlaceholder.querySelector('.navbar');
+        if (!document.querySelector('.home')) {
+            if (injectedNav) injectedNav.classList.add('active');
+        }
+
+        // Highlight current page link
+        if (injectedNav) {
+            const navLinks = injectedNav.querySelectorAll('.nav-items a');
+            const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.style.color = 'orangered';
+                }
+            });
+        }
+    }
+
     if (document.getElementById('product-cart-area')) return;
     const cartContainer = document.createElement('div');
     cartContainer.innerHTML = `
@@ -1300,11 +1367,17 @@ if (confirmOrderBtn) {
         const totalAmount = parseFloat(totalBuyingItemsAmount.innerText);
 
         try {
-            const response = await fetch('http://localhost:5000/api/order/place', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId: customerId, items, totalAmount })
-            });
+                const response = await fetch('http://localhost:5000/api/order/place', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        userId: customerId, 
+                        items, 
+                        totalAmount,
+                        address: localStorage.getItem('customerAddress'),
+                        phone: localStorage.getItem('customerPhone')
+                    })
+                });
             const data = await response.json();
 
             if (response.ok) {
@@ -1503,6 +1576,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const userNameElement = document.getElementById('user-name');
     const userEmailElement = document.getElementById('user-email');
     const userPhoneElement = document.getElementById('user-phone');
+    const userAddressElement = document.getElementById('user-address');
     const logoutBtn = document.getElementById('logout-btn');
     const loginLink = document.querySelector('#login-or-signup a');
 
@@ -1510,8 +1584,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const customerId = localStorage.getItem('customerId');
     const customerEmail = localStorage.getItem('customerEmail');
     const customerPhone = localStorage.getItem('customerPhone');
+    const customerAddress = localStorage.getItem('customerAddress');
 
-    console.log("Current Session:", { customerName, customerId, customerEmail, customerPhone });
+    console.log("Current Session:", { customerName, customerId, customerEmail, customerPhone, customerAddress });
 
     const getCleanValue = (val) => (val && val !== 'undefined' && val !== 'null') ? val : 'N/A';
 
@@ -1529,13 +1604,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('customerName', data.name);
                 localStorage.setItem('customerEmail', data.email);
                 localStorage.setItem('customerPhone', data.phone);
+                localStorage.setItem('customerAddress', data.address);
                 
                 // Update UI instantly
                 if (userNameElement) userNameElement.textContent = data.name;
                 if (userEmailElement) userEmailElement.textContent = getCleanValue(data.email);
                 if (userPhoneElement) {
                     userPhoneElement.textContent = getCleanValue(data.phone);
-                    userPhoneElement.parentElement.style.display = 'block';
+                }
+                if (userAddressElement) {
+                    userAddressElement.textContent = getCleanValue(data.address);
                 }
             } else {
                 console.warn("Profile sync failed. Error Code:", response.status);
@@ -1550,6 +1628,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (userNameElement) userNameElement.textContent = customerName;
         if (userEmailElement) userEmailElement.textContent = getCleanValue(customerEmail);
         if (userPhoneElement) userPhoneElement.textContent = getCleanValue(customerPhone);
+        if (userAddressElement) userAddressElement.textContent = getCleanValue(customerAddress);
         
         // Sync with backend to fix any "N/A"
         syncProfile();
@@ -1575,6 +1654,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.removeItem('customerId');
                 localStorage.removeItem('customerEmail');
                 localStorage.removeItem('customerPhone');
+                localStorage.removeItem('customerAddress');
                 window.location.reload();
             };
         }

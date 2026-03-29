@@ -110,7 +110,7 @@ async function loadFarmers() {
             const statusText = f.approved ? "Verified" : "Pending";
             const actionBtn = f.approved ? 
                 `<span style="color: #bdc3c7; font-size: 0.85rem;"><i class="fa-solid fa-circle-check"></i> Already Verified</span>` : 
-                `<button class="action-btn approve-btn" onclick="approveFarmer('${f._id}')"><i class="fa-solid fa-user-plus"></i> Approve Farmer</button>`;
+                `<button class="action-btn approve-btn" onclick="approveFarmer('${f._id}')"><i class="fa-solid fa-user-plus"></i> Approve</button>`;
 
             list.innerHTML += `
                 <tr>
@@ -118,10 +118,17 @@ async function loadFarmers() {
                     <td>${f.email}</td>
                     <td><span class="status-badge" style="${statusStyle}">${statusText}</span></td>
                     <td>${actionBtn}</td>
+                    <td>
+                        <button class="action-btn" style="background:#fff; color:#e67e22; border:1px solid #e67e22;" onclick="viewFarmerHistory('${f._id}')"><i class="fa-solid fa-clock-rotate-left"></i> Full History</button>
+                    </td>
                 </tr>
             `;
         });
     } catch (err) { console.error(err); }
+}
+
+function viewFarmerHistory(id) {
+    window.location.href = `admin-products.html?farmerId=${id}`;
 }
 
 async function approveFarmer(id) {
@@ -158,10 +165,17 @@ async function loadCustomers() {
                     <td>
                         <button class="action-btn ${btnClass}" onclick="toggleBlockUser('${u._id}')">${btnIcon} ${btnText}</button>
                     </td>
+                    <td>
+                        <button class="action-btn" style="background:#fff; color:#3498db; border:1px solid #3498db;" onclick="viewCustomerHistory('${u._id}')"><i class="fa-solid fa-receipt"></i> Orders View</button>
+                    </td>
                 </tr>
             `;
         });
     } catch (err) { console.error(err); }
+}
+
+function viewCustomerHistory(id) {
+    window.location.href = `admin-orders.html?userId=${id}`;
 }
 
 async function toggleBlockUser(id) {
