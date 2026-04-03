@@ -237,9 +237,20 @@
                     alert("Thank you for your feedback!");
                     location.reload();
                 } else {
-                    alert("Error submitting review. Please try again.");
+                    const errorText = await res.text();
+                    let errorMessage = "Error submitting review.";
+                    try {
+                        const errorData = JSON.parse(errorText);
+                        errorMessage = errorData.message || errorData.error || errorMessage;
+                    } catch (e) {
+                        errorMessage = `Server Error (${res.status}): ${errorText.slice(0, 50)}`;
+                    }
+                    alert(errorMessage);
                 }
-            } catch (err) { console.error(err); }
+            } catch (err) { 
+                console.error(err); 
+                alert("Network Error: Could not connect to the server. Please check if the backend is running.");
+            }
         }
     </script>
 </body>

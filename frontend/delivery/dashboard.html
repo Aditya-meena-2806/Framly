@@ -157,6 +157,11 @@
                     const vIcon = document.querySelector("#vehicleBadge i");
                     if (profile.vehicleType === "Cycle") vIcon.className = "fa-solid fa-bicycle";
                     else if (profile.vehicleType === "Scooter") vIcon.className = "fa-solid fa-moped";
+                } else if (res.status === 403) {
+                    alert("Your account has been deactivated by the administrator.");
+                    logout();
+                } else {
+                    console.error("Profile sync failed. Partner may be deactivated.");
                 }
             } catch (err) { console.error("Profile sync error"); }
         }
@@ -170,7 +175,9 @@
 
         // Initialize Map
         map = L.map('map').setView([20.5937, 78.9629], 5);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            attribution: '© OpenStreetMap contributors © CARTO'
+        }).addTo(map);
 
         function updateLiveLocation() {
             if (navigator.geolocation) {
@@ -337,6 +344,7 @@
                     const customer = order.userId;
                     const isPickedUp = order.status === "Picked Up" || order.status === "Shipped" || order.status === "In-Transit"; 
 
+
                     // Destination logic: use order specific location if set, otherwise customer profile location
                     const dropLoc = order.location && order.location.lat ? order.location : (customer && customer.location && customer.location.lat ? customer.location : null);
                     const pickupLoc = farmer && farmer.location && farmer.location.lat ? farmer.location : null;
@@ -364,14 +372,23 @@
                                     <i class="fa-solid fa-wheat-awn"></i> <b>${isPickedUp ? 'Picked Up From:' : 'Navigate to Pickup:'}</b><br>
                                     ${farmer.name} | ${farmer.address || 'Unknown Farm Address'}
                                 </div>
-                                ${pickupLoc ? `<a href="https://www.google.com/maps/dir/?api=1&destination=${pickupLoc.lat},${pickupLoc.lng}" target="_blank" style="background:#92400e; color:white; padding:8px 12px; border-radius:8px; text-decoration:none; font-size:0.75rem; font-weight:700;"><i class="fa-solid fa-diamond-turn-right"></i> Pass</a>` : ''}
+                                ${pickupLoc ? `<a href="https://www.google.com/maps/dir/?api=1&destination=${pickupLoc.lat},${pickupLoc.lng}" target="_blank" style="background:#92400e; color:white; padding:8px 12px; border-radius:8px; text-decoration:none; font-size:0.75rem; font-weight:700;"><i class="fa-solid fa-diamond-turn-right"></i> Nav</a>` : ''}
                             </div>
                             <div style="background:#f0fdf4; padding:12px; border-radius:10px; border:1px solid #dcfce7; color:#166534; display:flex; justify-content:space-between; align-items:center; ${!isPickedUp ? 'opacity:0.6' : ''}">
                                 <div>
                                     <i class="fa-solid fa-house-chimney-user"></i> <b>${isPickedUp ? 'Navigate to Drop:' : 'Future Drop:'}</b><br>
                                     ${customer ? customer.name : 'Guest Customer'} | ${customer ? (customer.address || order.address) : (order.address || 'No Drop Address')}
                                 </div>
-                                ${dropLoc ? `<a href="https://www.google.com/maps/dir/?api=1&destination=${dropLoc.lat},${dropLoc.lng}" target="_blank" style="background:#166534; color:white; padding:8px 12px; border-radius:8px; text-decoration:none; font-size:0.75rem; font-weight:700;"><i class="fa-solid fa-diamond-turn-right"></i> Drop</a>` : ''}
+                                ${dropLoc ? 
+                                    `<a href="https://www.google.com/maps/dir/?api=1&destination=${dropLoc.lat},${dropLoc.lng}" target="_blank" style="background:#166534; color:white; padding:8px 12px; border-radius:8px; text-decoration:none; font-size:0.75rem; font-weight:700;"><i class="fa-solid fa-diamond-turn-right"></i> Nav</a>` : 
+                                    `<div style="font-size:0.65rem; color:#dc2626; text-align:right;"><i class="fa-solid fa-triangle-exclamation"></i> Pin Missing<br>(Use Address)</div>`
+                                }
+                            </div>
+                            
+                            <!-- COD Payment Status Badge -->
+                            <div style="background:${order.paymentStatus === 'Paid' ? '#ecfdf5' : '#fff7ed'}; padding:10px; border-radius:10px; border:1px solid ${order.paymentStatus === 'Paid' ? '#10b981' : '#f97316'}; color:${order.paymentStatus === 'Paid' ? '#065f46' : '#9a3412'}; font-weight:700; font-size:0.9rem; display:flex; align-items:center; gap:8px;">
+                                <i class="fa-solid ${order.paymentStatus === 'Paid' ? 'fa-circle-check' : 'fa-circle-exclamation'}"></i>
+                                Payment (COD): ${order.paymentStatus === 'Paid' ? 'COLLECTED' : `PENDING - Collect ₹${order.totalAmount}`}
                             </div>
                         </div>
                     `;
@@ -399,35 +416,68 @@
                         
                         if (dropLoc) {
                             focusMap(dropLoc.lat, dropLoc.lng, `<b>Deliver to: ${customer ? customer.name : 'Customer'}</b>`, "drop");
-                        } else {
-                            // High-Visibility fallback UI for missing drop coordinates
-                            document.getElementById("activeOrderDetail").innerHTML += `
-                                <div style="background:#fee2e2; padding:10px; border-radius:10px; margin-top:10px; border:1px solid #fecaca; color:#991b1b; font-size:0.8rem; font-weight:600;">
-                                    <i class="fa-solid fa-circle-exclamation"></i> GPS target missing for this drop. Use the written address above.
-                                </div>
-                            `;
                         }
                     }
 
                     if (nextStatus) {
-                        document.getElementById("statusActions").innerHTML = `
-                            <div style="display:flex; flex-direction:column; gap:10px;">
+                        let actionHtml = `<div style="display:flex; flex-direction:column; gap:10px;">`;
+
+                        // If COD not paid and we are at the delivery stage (Shipped)
+                        if (order.paymentStatus !== "Paid" && order.status === "Shipped") {
+                             actionHtml += `
+                                <button class="btn-accept" style="background:#f97316;" onclick="collectCOD('${order._id}', ${order.totalAmount})">
+                                    <i class="fa-solid fa-hand-holding-dollar"></i> Collect Payment ₹${order.totalAmount}
+                                </button>
+                            `;
+                        }
+
+                        // Only allow 'Delivered' if payment is collected
+                        const canMarkDelivered = (nextStatus !== "Delivered" || order.paymentStatus === "Paid");
+
+                        if (canMarkDelivered) {
+                            actionHtml += `
                                 <button class="btn-accept" onclick="updateStatus('${order._id}', '${nextStatus}')">
                                     <i class="fa-solid ${btnIcon}"></i> ${btnLabel}
                                 </button>
-                                ${order.status === 'Accepted' ? `
+                            `;
+                        } else {
+                            actionHtml += `
+                                <button class="btn-accept" style="background:#cbd5e1; color:#64748b; cursor:not-allowed;" disabled>
+                                    <i class="fa-solid fa-lock"></i> Collect Payment First
+                                </button>
+                            `;
+                        }
+
+                        if (order.status === 'Accepted') {
+                            actionHtml += `
                                 <button class="btn-accept" style="background:#dc2626; padding:8px;" onclick="rejectTask('${order._id}')">
                                     <i class="fa-solid fa-circle-xmark"></i> Reject Task
-                                </button>` : ''}
-                            </div>
-                        `;
+                                </button>
+                            `;
+                        }
+
+                        actionHtml += `</div>`;
+                        document.getElementById("statusActions").innerHTML = actionHtml;
                     }
                 } else {
                     document.getElementById("activeOrderSection").style.display = "none";
                     document.getElementById("availableOrdersSection").style.display = "block";
                 }
-            } catch (err) { }
+            } catch (err) { console.error("Active order check error:", err); }
         }
+
+        async function collectCOD(orderId, amount) {
+            if (confirm(`Confirm you have collected COD payment of ₹${amount}?`)) {
+                try {
+                    const res = await fetch(`${API_URL}/collect-payment/${orderId}`, { method: "PUT" });
+                    if (res.ok) {
+                        alert("Payment Collected!");
+                        checkActiveOrder();
+                    }
+                } catch (err) { console.error(err); }
+            }
+        }
+
 
         function focusMap(lat, lng, label, type = "pickup") {
             if (!map || !lat || !lng) return;
@@ -563,7 +613,10 @@
         loadOrders();
         checkActiveOrder();
         loadHistory();
-        setInterval(loadOrders, 10000);
+        setInterval(() => {
+            loadOrders();
+            fetchPartnerProfile(); // Periodic check for deactivation
+        }, 10000);
     </script>
 </body>
 

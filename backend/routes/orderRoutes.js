@@ -9,7 +9,7 @@ const { sendEmail, orderEmailTemplate, isValidEmail } = require("../utils/emailS
 router.post("/place", async (req, res) => {
     try {
         const { userId, items, totalAmount, address, phone } = req.body;
-
+        
         if (!userId || !items || items.length === 0 || !totalAmount) {
             return res.status(400).json({ message: "Missing order details" });
         }
@@ -75,6 +75,8 @@ router.post("/place", async (req, res) => {
             userId,
             items,
             totalAmount,
+            status: "Pending", // Default
+            paymentStatus: "Pending", // For COD
             address: address || user.address || "N/A",
             phone: phone || user.phone || "N/A",
             location: user.location // Copy GPS coordinates for the delivery partner
@@ -145,20 +147,44 @@ router.put("/submit-review/:id", async (req, res) => {
         const { rating, comment } = req.body;
         const orderId = req.params.id;
 
+        if (!rating) {
+            return res.status(400).json({ message: "Rating is required." });
+        }
+
         const order = await Order.findById(orderId);
         if (!order) return res.status(404).json({ message: "Order not found" });
-        if (order.status !== "Delivered") return res.status(400).json({ message: "Can only review delivered orders" });
 
-        order.review = {
-            rating,
-            comment,
-            reviewedAt: new Date()
-        };
+        // Robust check: case-insensitive and trimmed
+        const currentStatus = order.status ? order.status.trim().toLowerCase() : "";
+        if (currentStatus !== "delivered") {
+            return res.status(400).json({ 
+                message: `Can only review delivered orders (Current status: ${order.status})` 
+            });
+        }
 
-        await order.save();
-        res.json({ message: "Review submitted successfully!", order });
+        // Use findByIdAndUpdate for a cleaner atomic update
+        const updatedOrder = await Order.findByIdAndUpdate(
+            orderId,
+            {
+                $set: {
+                    review: {
+                        rating: Number(rating),
+                        comment: comment || "",
+                        reviewedAt: new Date()
+                    }
+                }
+            },
+            { new: true }
+        );
+
+        console.log(`REVIEW SUCCESS: Order #${orderId.slice(-6)} rated ${rating} stars.`);
+        res.json({ message: "Review submitted successfully!", order: updatedOrder });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.error("REVIEW SUBMISSION ERROR:", err);
+        res.status(500).json({ 
+            message: "Internal server error while saving feedback.", 
+            error: err.message 
+        });
     }
 });
 

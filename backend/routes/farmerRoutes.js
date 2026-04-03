@@ -67,6 +67,10 @@ router.post("/login", async (req, res) => {
             return res.status(403).json({ message: "Account pending admin approval" });
         }
 
+        if (!farmer.active) {
+            return res.status(403).json({ message: "Your account is deactivated. Please contact admin." });
+        }
+
         res.json({
             message: "Login successful",
             farmerId: farmer._id,
@@ -87,6 +91,10 @@ router.get("/profile/:id", async (req, res) => {
         const farmer = await Farmer.findById(req.params.id);
         if (!farmer) {
             return res.status(404).json({ message: "Farmer not found" });
+        }
+
+        if (!farmer.active) {
+            return res.status(403).json({ message: "Account deactivated", active: false });
         }
         res.json({
             name: farmer.name,

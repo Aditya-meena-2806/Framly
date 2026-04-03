@@ -76,7 +76,8 @@ router.post("/verify", async (req, res) => {
                 email: userData.email,
                 password: userData.password,
                 phone: userData.phone,
-                address: userData.address
+                address: userData.address,
+                location: userData.location
             });
             resultUser = await newUser.save();
         } else if (role === 'farmer') {

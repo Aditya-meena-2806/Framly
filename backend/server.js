@@ -19,7 +19,12 @@ connectDB();
 const app = express();
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
-app.use(cors());
+// CORS: Allow both localhost and file origins (null origin)
+app.use(cors({
+    origin: '*', 
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    credentials: true
+}));
 
 // Serve uploaded images and frontend statically
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));

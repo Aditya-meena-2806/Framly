@@ -10,7 +10,8 @@ const farmerSchema = new mongoose.Schema({
         lat: { type: Number },
         lng: { type: Number }
     },
-    approved: { type: Boolean, default: false }
+    approved: { type: Boolean, default: false },
+    active: { type: Boolean, default: true }
 }, { timestamps: true });
 
 module.exports = mongoose.model("Farmer", farmerSchema);

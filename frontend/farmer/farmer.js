@@ -283,6 +283,9 @@ async function syncFarmerProfile() {
             // ----------------------------------------------------
 
             loadNotifications();
+        } else if (response.status === 403) {
+            alert("Your account has been deactivated by the administrator.");
+            logout();
         }
     } catch (err) {
         console.error("Profile Sync Error:", err);
@@ -313,3 +316,4 @@ updateProfileUI();
 loadProducts();
 loadNotifications();
 setInterval(loadNotifications, 30000);
+setInterval(syncFarmerProfile, 30000); // Check for deactivation every 30s

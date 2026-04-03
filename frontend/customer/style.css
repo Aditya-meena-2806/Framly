@@ -2576,150 +2576,231 @@ footer p a {
     Footer Section End
 ======================== */
 
-/* =========================
-    Profile Dropdown Area
-=========================== */
+/* =================================
+    Modern Premium Redesign
+==================================== */
 .profile-container {
+    padding: 0 1rem;
     position: relative;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px;
-}
-
-.profile-container .fa-user {
-    font-size: 1.1rem;
-    color: #444;
-    transition: 0.3s;
 }
 
 #login-or-signup {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 38px;
-    width: 38px;
+    height: 40px;
+    width: 40px;
     border-radius: 50%;
-    background: #f4f4f4;
-    transition: 0.3s;
+    background: #fff;
+    border: 1.5px solid #eef3ee;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 #login-or-signup:hover {
-    background: #e8f5e9;
+    transform: scale(1.1);
+    border-color: #267226;
+    box-shadow: 0 5px 15px rgba(38, 114, 38, 0.1);
 }
 
-#login-or-signup:hover .fa-user {
-    color: #267226;
-}
-
-#login-or-signup a {
-    text-decoration: none;
-    color: inherit;
-}
+#login-or-signup a { color: #267226; text-decoration: none; font-size: 1.1rem; }
 
 .profile-dropdown {
     position: absolute;
-    top: 110%;
-    right: 0;
-    width: 300px;
-    background: #fff !important;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-    border-radius: 12px;
-    padding: 25px;
+    top: 130%;
+    right: -10px;
+    width: 340px;
+    background: #fff;
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.18);
+    border-radius: 24px;
+    padding: 0; 
     opacity: 0;
     visibility: hidden;
-    transform: translateY(20px);
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    z-index: 10000;
-    border: 1px solid #f0f0f0;
-    text-align: left;
+    transform: translateY(30px) scale(0.95);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    z-index: 10001;
+    overflow: hidden;
 }
 
 .profile-dropdown.active-dropdown {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
 }
 
-.user-info h3 {
-    font-size: 1.1rem;
-    color: #333;
-    margin-bottom: 5px;
-    text-transform: capitalize;
+.modern-header-accent {
+    background: linear-gradient(135deg, #166534 0%, #15803d 100%);
+    height: 120px;
+    position: relative;
+    padding: 24px;
 }
 
-.user-info p {
-    font-size: 0.95rem;
-    color: #444;
-    margin-bottom: 8px;
-    display: block;
-    text-align: left;
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: #fff;
+    margin-top: 10px;
 }
 
-.user-info strong {
-    color: #333;
-    font-weight: 600;
-    margin-right: 10px;
+.floating-avatar {
+    width: 65px;
+    height: 65px;
+    background: #fff;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #166534;
+    font-size: 1.8rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
-.profile-dropdown hr {
-    margin: 15px 0;
-    border: none;
-    border-top: 1px solid #eee;
+.header-text h3 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: -0.5px;
 }
 
-.profile-links {
+#user-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-top: 5px;
+    display: inline-block;
+    letter-spacing: 1px;
+}
+
+.modern-info-body {
+    padding: 30px 24px 10px;
+}
+
+.info-card {
+    background: #f8fafc;
+    border-radius: 18px;
+    padding: 20px;
+    border: 1px solid #f1f5f9;
+}
+
+.info-item {
+    margin-bottom: 20px;
+}
+
+.info-item:last-child { margin-bottom: 0; }
+
+.item-label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #94a3b8;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    letter-spacing: 0.5px;
+}
+
+.item-label i { color: #166534; font-size: 0.8rem; }
+
+.item-value {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #1e293b;
+    padding-left: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.modern-nav-links {
     list-style: none;
-    padding: 0;
+    padding: 10px 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
 }
 
-.profile-links li {
-    margin-bottom: 15px;
-}
-
-.profile-links li a {
-    text-decoration: none;
-    color: #555;
-    font-size: 0.95rem;
+.modern-nav-links li a {
     display: flex;
     align-items: center;
     gap: 12px;
-    transition: 0.2s;
+    padding: 12px;
+    background: #fff;
+    border: 1px solid #f1f5f9;
+    border-radius: 14px;
+    text-decoration: none;
+    color: #475569;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
 }
 
-.profile-links li a:hover {
-    color: orangered;
+.modern-nav-links li a span {
+    width: 28px;
+    height: 28px;
+    background: #f1f5f9;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #166534;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
 }
 
-.profile-links li i {
-    width: 20px;
+.modern-nav-links li a:hover {
+    border-color: #267226;
+    background: #f0fdf4;
+    color: #166534;
+    transform: translateY(-2px);
 }
 
-.logout-btn-container {
-    text-align: center;
+.modern-nav-links li a:hover span {
+    background: #166534;
+    color: #fff;
+}
+
+.modern-footer-action {
+    padding: 24px;
 }
 
 #logout-btn {
     width: 100%;
-    padding: 10px;
+    padding: 16px;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     border: none;
-    background: #f4f4f4;
-    color: #333;
-    border-radius: 4px;
-    font-weight: 600;
+    color: #fff;
+    border-radius: 16px;
+    font-weight: 800;
+    font-size: 0.95rem;
     cursor: pointer;
-    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 20px rgba(239, 68, 68, 0.2);
 }
 
 #logout-btn:hover {
-    background: #fdeaea;
-    color: #d42525;
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(239, 68, 68, 0.3);
 }
 
-/* Myntra style hover */
+#logout-btn i { font-size: 1.1rem; }
+
+/* Desktop hover */
 .profile-container:hover .profile-dropdown {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
 }
+
+
+
+
+

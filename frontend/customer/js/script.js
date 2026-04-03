@@ -1,5 +1,5 @@
 // Inject global cart elements if missing
-(function() {
+(function () {
     // ---- Global Navbar Injection ----
     const navbarPlaceholder = document.getElementById('navbar-placeholder');
     if (navbarPlaceholder) {
@@ -38,23 +38,39 @@
                 <div class="profile-container" id="profile-container">
                     <div id="login-or-signup"><a href="${prefix}login.html"><span class="fa-solid fa-user"></span></a></div>
                     <div class="profile-dropdown" id="profile-dropdown">
-                        <div class="user-info">
-                            <p><strong>Username:</strong> <span id="user-name">Welcome!</span></p>
-                            <p><strong>Email:</strong> <span id="user-email"></span></p>
-                            <p><strong>Phone:</strong> <span id="user-phone"></span></p>
-                            <p><strong>Address:</strong> <span id="user-address"></span></p>
+                        <div class="modern-header-accent">
+                            <div class="header-content">
+                                <div class="floating-avatar"><i class="fa-solid fa-user-tie"></i></div>
+                                <div class="header-text">
+                                    <h3 id="user-name">Welcome!</h3>
+                                    <p id="user-badge">CUSTOMER</p>
+                                </div>
+                            </div>
                         </div>
-                        <hr>
-                        <ul class="profile-links">
-                            <li><a href="${prefix}update-location.html"><i class="fa-solid fa-map-location-dot"></i> Update Location</a></li>
-                            <li><a href="${prefix}order-history.html"><i class="fa-solid fa-clock-rotate-left"></i> Order History</a></li>
-                            <li><a href="${prefix}cart.html"><i class="fa-solid fa-heart"></i> Wishlist</a></li>
-                            <li><a href="#"><i class="fa-solid fa-gift"></i> Gift Cards</a></li>
-                            <li><a href="${(path.includes('/delivery/')) ? contactPage : prefix + contactPage}"><i class="fa-solid fa-headset"></i> Contact Us</a></li>
+                        <div class="modern-info-body">
+                            <div class="info-card">
+                                <div class="info-item">
+                                    <div class="item-label"><i class="fa-solid fa-envelope"></i> EMAIL</div>
+                                    <div class="item-value" id="user-email">...</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="item-label"><i class="fa-solid fa-phone"></i> MOBILE</div>
+                                    <div class="item-value" id="user-phone">...</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="item-label"><i class="fa-solid fa-location-dot"></i> SAVED ADDRESS</div>
+                                    <div class="item-value" id="user-address">...</div>
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="modern-nav-links">
+                            <li><a href="${prefix}update-location.html"><span><i class="fa-solid fa-map-pin"></i></span> Location</a></li>
+                            <li><a href="${prefix}order-history.html"><span><i class="fa-solid fa-receipt"></i></span> Orders</a></li>
+                            <li><a href="javascript:void(0)" onclick="window.openFavoritesSidebar()"><span><i class="fa-solid fa-heart"></i></span> Favorites</a></li>
+                            <li><a href="${(path.includes('/delivery/')) ? contactPage : prefix + contactPage}"><span><i class="fa-solid fa-comments"></i></span> Support</a></li>
                         </ul>
-                        <hr>
-                        <div class="logout-btn-container">
-                            <button id="logout-btn">Logout</button>
+                        <div class="modern-footer-action">
+                            <button id="logout-btn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout Account</button>
                         </div>
                     </div>
                 </div>
@@ -261,9 +277,9 @@ window.onscroll = () => {
             // On subpages, we might WANT it to stay active.
             // But if it's not the home page, we check context.
             if (!document.querySelector('.home')) {
-                 navbar.classList.add('active');
+                navbar.classList.add('active');
             } else {
-                 navbar.classList.remove('active');
+                navbar.classList.remove('active');
             }
         }
     }
@@ -415,7 +431,7 @@ function saveCartToStorage() {
         const stock = parseFloat(stockTextRaw) || 0;
         const id = item.getAttribute('data-id');
         const actualFarmerId = item.getAttribute('data-farmer-id');
-        
+
         // Find if it's already in "Buy" list
         let buyData = null;
         const buyItems = shoppingDetailsContent ? shoppingDetailsContent.querySelectorAll('.shopping-details') : [];
@@ -440,7 +456,7 @@ function saveFavoritesToStorage() {
     for (let item of favItems) {
         const name = item.querySelector('.product-name').textContent;
         const price = parseFloat(item.querySelector('.f-cur-price').textContent);
-        
+
         // Better unit extraction: find the text after "Rs/"
         const priceText = item.querySelector('.price').textContent;
         let unit = 'kg';
@@ -449,15 +465,15 @@ function saveFavoritesToStorage() {
             unit = parts[1].trim();
             if (unit === 'undefined') unit = 'kg';
         }
-        
+
         const image = item.querySelector('.product-img img').src;
         const id = item.getAttribute('data-id');
-        
+
         // Also capture seller and stock from the clone if available
         const sellerEle = item.querySelector('.seller-name strong');
         let farmerName = sellerEle ? sellerEle.textContent : 'Unknown Farmer';
         if (farmerName === 'Unknown') farmerName = 'Unknown Farmer';
-        
+
         const stockEle = item.querySelector('.stock-level strong');
         const stock = stockEle ? parseFloat(stockEle.textContent) : 0;
 
@@ -467,12 +483,12 @@ function saveFavoritesToStorage() {
 }
 
 // Global function to open favorites from anywhere
-window.openFavoritesSidebar = function() {
+window.openFavoritesSidebar = function () {
     if (typeof productCartArea !== 'undefined' && productCartArea) {
         productCartArea.classList.add('active-cart');
-        if (typeof controllScrolling !== 'undefined' && controllScrolling) 
+        if (typeof controllScrolling !== 'undefined' && controllScrolling)
             controllScrolling.style.overflowY = 'hidden';
-        
+
         // Switch to favorites tab
         const favTab = document.getElementById('favorite-products');
         if (favTab) favTab.click();
@@ -700,7 +716,7 @@ function getAddedTime() {
     let MM = dt.getMinutes();
     let XM = null;
 
-    (HH >= 12) ? XM = 'PM': XM = 'AM';
+    (HH >= 12) ? XM = 'PM' : XM = 'AM';
 
     if (HH > 12) {
         HH -= 12;
@@ -1070,15 +1086,15 @@ function controlSelectedProductItems(itemIndex) {
         let selectedProductRemoveBtn = newCartContent[itemIndex].children[1].children[8];
 
         selectedProductRemoveBtn.onclick = () => {
-                removeSelectedProduct(itemIndex);
+            removeSelectedProduct(itemIndex);
 
-                // remove shopping cart item
-                if (addedForBuy[itemIndex] === true) {
-                    removeShoppingCartProduct(itemIndex);
-                }
-
+            // remove shopping cart item
+            if (addedForBuy[itemIndex] === true) {
+                removeShoppingCartProduct(itemIndex);
             }
-            ++countSelectedItem;
+
+        }
+        ++countSelectedItem;
         totalSelectedCounter.innerHTML = countSelectedItem;
         cartIconProductCounter.innerHTML = countSelectedItem;
         addedToCart[itemIndex] = true;
@@ -1242,7 +1258,7 @@ if (removeAllShopItems) {
 // ===================================
 
 // Bridge for dynamic products
-window.addToCart = function(btnWrap, name, price, unit, image, id, farmerName, stock, actualFarmerId) {
+window.addToCart = function (btnWrap, name, price, unit, image, id, farmerName, stock, actualFarmerId) {
     const btn = btnWrap.querySelector('p');
     const isAdded = btnWrap.getAttribute('data-added') === 'true';
 
@@ -1250,10 +1266,10 @@ window.addToCart = function(btnWrap, name, price, unit, image, id, farmerName, s
         btnWrap.setAttribute('data-added', 'true');
         btn.style.background = 'orangered';
         btn.innerHTML = '<span class="fa-solid fa-cart-arrow-down"></span> Added';
-        
+
         const addedTime = getAddedTime();
         const newContent = createSelectedProductsContent(image, name, price, unit, 0, 'No', addedTime, id, farmerName, stock, actualFarmerId);
-        
+
         const removeBtn = newContent.querySelector('.remove-item-btn');
         removeBtn.onclick = () => {
             cartContentArea.removeChild(newContent);
@@ -1274,7 +1290,7 @@ window.addToCart = function(btnWrap, name, price, unit, image, id, farmerName, s
         addToBuyBtn.onclick = () => {
             const itemQuantity = newContent.querySelector('input[type="number"]');
             const q = Number(itemQuantity.value);
-            
+
             if (!addedForBuyLocal && q > 0) {
                 if (stock && q > stock) {
                     alert(`Only ${stock} items available!`);
@@ -1284,17 +1300,17 @@ window.addToCart = function(btnWrap, name, price, unit, image, id, farmerName, s
                 addToBuyBtn.style.background = 'crimson';
                 addToBuyBtn.innerHTML = 'Added';
                 itemQuantity.setAttribute('disabled', 'true');
-                
+
                 const presentPrice = (price - (0 * price)).toFixed(2);
-                
+
                 shoppingCartItemLocal = createShoppingCartItem(name, price, unit, 0, presentPrice, q, id, actualFarmerId);
                 shoppingDetailsContent.appendChild(shoppingCartItemLocal);
-                
+
                 if (unit === 'kg') countTotalWeight += q;
                 else if (unit === 'dzn') countTotalDozen += q;
                 else if (unit === 'pcs') countTotalPieces += q;
                 countTotalAmount += presentPrice * q;
-                
+
                 addedForBuyLocal = true;
                 newContent.style.display = 'none'; // Hide from Selected Products list
                 saveCartToStorage();
@@ -1308,12 +1324,12 @@ window.addToCart = function(btnWrap, name, price, unit, image, id, farmerName, s
                     itemQuantity.removeAttribute('disabled');
                     shoppingDetailsContent.removeChild(shoppingCartItemLocal);
                     newContent.style.display = 'flex'; // Show again in Selected Products
-                    
+
                     if (unit === 'kg') countTotalWeight -= q;
                     else if (unit === 'dzn') countTotalDozen -= q;
                     else if (unit === 'pcs') countTotalPieces -= q;
                     countTotalAmount -= presentPrice * q;
-                    
+
                     addedForBuyLocal = false;
                     saveCartToStorage();
                     displayBuyingDetailsFooter(countAddToBuyItem);
@@ -1333,7 +1349,7 @@ window.addToCart = function(btnWrap, name, price, unit, image, id, farmerName, s
     } else {
         productCartArea.classList.add('active-cart');
     }
-    
+
     totalSelectedCounter.innerHTML = countSelectedItem;
     cartIconProductCounter.innerHTML = countSelectedItem;
     displayBuyingHeader(countSelectedItem);
@@ -1341,10 +1357,11 @@ window.addToCart = function(btnWrap, name, price, unit, image, id, farmerName, s
 };
 
 // ==============================
-//    Confirm Order Area Start
+//    Confirm Order Area 
 // ==============================
 
 const confirmOrderBtn = document.getElementById('confirm-order-btn');
+
 if (confirmOrderBtn) {
     confirmOrderBtn.onclick = async () => {
         const customerId = localStorage.getItem('customerId');
@@ -1360,10 +1377,25 @@ if (confirmOrderBtn) {
             return;
         }
 
-        if (!confirm("Are you sure you want to place this order?")) return;
+        if (!confirm("Are you sure you want to place this order?")) {
+            return;
+        }
 
+        // --- Location Check for Delivery Fulfillment ---
+        const customerLat = localStorage.getItem('customerLat');
+        if (!customerLat || customerLat === 'undefined' || customerLat === 'null') {
+            const goToUpdate = confirm("Wait! You haven't pinned your delivery location on the map. \n\nWithout a map pin, delivery partners might struggle to find you. \n\nGo to 'Update Location' now?");
+            if (goToUpdate) {
+                window.location.href = 'update-location.html';
+                return;
+            }
+        }
+        // ---------------------------------------------
+
+        const totalAmount = parseFloat(totalBuyingItemsAmount.innerText);
         const items = [];
         let missingIds = false;
+
         shoppingDetailsItems.forEach(itemDiv => {
             const id = itemDiv.getAttribute('data-id');
             const farmerId = itemDiv.getAttribute('data-farmer-id');
@@ -1381,32 +1413,37 @@ if (confirmOrderBtn) {
             return;
         }
 
-        const totalAmount = parseFloat(totalBuyingItemsAmount.innerText);
+        confirmOrderBtn.disabled = true;
+        confirmOrderBtn.innerText = "Placing Order...";
 
         try {
-                const response = await fetch('http://localhost:5000/api/order/place', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        userId: customerId, 
-                        items, 
-                        totalAmount,
-                        address: localStorage.getItem('customerAddress'),
-                        phone: localStorage.getItem('customerPhone')
-                    })
-                });
+            const response = await fetch('http://localhost:5000/api/order/place', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: customerId,
+                    items,
+                    totalAmount,
+                    address: localStorage.getItem('customerAddress'),
+                    phone: localStorage.getItem('customerPhone')
+                })
+            });
             const data = await response.json();
 
             if (response.ok) {
-                alert('Order Placed! Check your email for confirmation.');
-                localStorage.removeItem('farmly_cart'); // Clear cart on success
-                window.location.reload(); 
+                alert('Order Placed! Please pay on delivery.');
+                localStorage.removeItem('farmly_cart');
+                window.location.reload();
             } else {
                 alert(data.message || 'Order Failed');
+                confirmOrderBtn.disabled = false;
+                confirmOrderBtn.innerText = "Confirm Order";
             }
         } catch (err) {
             console.error('Order Error:', err);
-            alert('Server Error during order placement. Ensure backend is running.');
+            alert('Server Error during order placement.');
+            confirmOrderBtn.disabled = false;
+            confirmOrderBtn.innerText = "Confirm Order";
         }
     };
 }
@@ -1507,7 +1544,7 @@ let timeCount = setInterval(() => {
 }, 1000);
 
 // Bridge for dynamic favorites
-window.toggleFavorite = function(heartIcon, name, price, unit, image, id) {
+window.toggleFavorite = function (heartIcon, name, price, unit, image, id) {
     const parentWrap = heartIcon.closest('.product-wrap');
     if (!parentWrap) return;
 
@@ -1519,17 +1556,17 @@ window.toggleFavorite = function(heartIcon, name, price, unit, image, id) {
         span.style.background = '#fff'; // White background
         span.style.color = '#e74c3c'; // Red heart
         span.style.fontSize = '1.3rem'; // Make it pop
-        
+
         // Create a dedicated clone for the wishlist
         let clone = parentWrap.cloneNode(true);
         clone.classList.add('favorite-item-clone');
         if (id) clone.setAttribute('data-id', id);
-        
+
         const fNameEle = parentWrap.querySelector('.seller-name strong');
         const fName = fNameEle ? fNameEle.textContent : 'Unknown Farmer';
         const sEle = parentWrap.querySelector('.stock-level strong');
         const sLevel = sEle ? parseFloat(sEle.textContent) : 0;
-        
+
         // Setup Add to Cart for the clone
         const cloneCartBtn = clone.querySelector('.add-to-cart-btn');
         if (cloneCartBtn) {
@@ -1537,7 +1574,7 @@ window.toggleFavorite = function(heartIcon, name, price, unit, image, id) {
                 window.addToCart(cloneCartBtn, name, price, unit, image, id, fName, sLevel);
             };
         }
-        
+
         // Setup removal behavior for the heart inside the wishlist
         const cloneHeart = clone.querySelector('.add-to-favorite');
         if (cloneHeart) {
@@ -1603,131 +1640,61 @@ document.addEventListener('DOMContentLoaded', () => {
     const customerPhone = localStorage.getItem('customerPhone');
     const customerAddress = localStorage.getItem('customerAddress');
 
-    console.log("Current Session:", { customerName, customerId, customerEmail, customerPhone, customerAddress });
-
     const getCleanValue = (val) => (val && val !== 'undefined' && val !== 'null') ? val : 'N/A';
 
-    // Proactive Sync: Fetch latest info if logged in
     async function syncProfile() {
         if (!customerId) return;
         try {
-            // Added cache-busting timestamp to avoid old responses
             const response = await fetch(`http://localhost:5000/api/customer/profile/${customerId}?t=${Date.now()}`);
             if (response.ok) {
                 const data = await response.json();
-                console.log("Profile Synced (Backend Version:", data.version, ")", data);
-                
-                // Update LocalStorage to keep in sync
                 localStorage.setItem('customerName', data.name);
                 localStorage.setItem('customerEmail', data.email);
                 localStorage.setItem('customerPhone', data.phone);
                 localStorage.setItem('customerAddress', data.address);
-                
-                // Update UI instantly
+
                 if (userNameElement) userNameElement.textContent = data.name;
                 if (userEmailElement) userEmailElement.textContent = getCleanValue(data.email);
-                if (userPhoneElement) {
-                    userPhoneElement.textContent = getCleanValue(data.phone);
-                }
-                if (userAddressElement) {
-                    userAddressElement.textContent = getCleanValue(data.address);
-                }
-            } else {
-                console.warn("Profile sync failed. Error Code:", response.status);
+                if (userPhoneElement) userPhoneElement.textContent = getCleanValue(data.phone);
+                if (userAddressElement) userAddressElement.textContent = getCleanValue(data.address);
             }
-        } catch (err) {
-            console.error("Profile sync network error", err);
-        }
+        } catch (err) { console.error("Profile sync error", err); }
     }
 
     if (customerName) {
-        // Show initial cached values first
         if (userNameElement) userNameElement.textContent = customerName;
         if (userEmailElement) userEmailElement.textContent = getCleanValue(customerEmail);
         if (userPhoneElement) userPhoneElement.textContent = getCleanValue(customerPhone);
         if (userAddressElement) userAddressElement.textContent = getCleanValue(customerAddress);
-        
-        // Sync with backend to fix any "N/A"
+
         syncProfile();
-        
+
         if (loginLink) {
-            loginLink.href = "javascript:void(0)"; 
             loginLink.onclick = (e) => {
                 e.preventDefault();
                 if (profileDropdown) profileDropdown.classList.toggle('active-dropdown');
             };
         }
-        
-        // Ensure Logout button is visible and properly styled
+
         if (logoutBtn) {
-            logoutBtn.textContent = 'Logout';
-            logoutBtn.style.display = 'block';
-            logoutBtn.style.background = '#f4f4f4';
-            logoutBtn.style.color = '#333';
-            
             logoutBtn.onclick = (e) => {
                 e.stopPropagation();
-                localStorage.removeItem('customerName');
-                localStorage.removeItem('customerId');
-                localStorage.removeItem('customerEmail');
-                localStorage.removeItem('customerPhone');
-                localStorage.removeItem('customerAddress');
+                localStorage.clear();
                 window.location.reload();
             };
         }
 
-        // Show dropdown on hover
+        // Desktop hover logic
         if (profileContainer && profileDropdown) {
-            profileContainer.addEventListener('mouseenter', () => {
-                profileDropdown.classList.add('active-dropdown');
-            });
-            profileContainer.addEventListener('mouseleave', () => {
-                profileDropdown.classList.remove('active-dropdown');
-            });
+            profileContainer.onmouseenter = () => profileDropdown.classList.add('active-dropdown');
+            profileContainer.onmouseleave = () => profileDropdown.classList.remove('active-dropdown');
         }
-
-        // Link Wishlist button in profile to sidebar favorites
-        const wishlistLinks = document.querySelectorAll('.profile-links a');
-        wishlistLinks.forEach(link => {
-            if (link.textContent.toLowerCase().includes('wishlist')) {
-                link.href = 'javascript:void(0)';
-                link.onclick = (e) => {
-                    e.preventDefault();
-                    if (profileDropdown) profileDropdown.classList.remove('active-dropdown');
-                    window.openFavoritesSidebar();
-                };
-            }
-        });
     } else {
-        // User is NOT logged in
-        if (userNameElement) userNameElement.textContent = "N/A";
-        if (userEmailElement) userEmailElement.textContent = "N/A";
-        if (userPhoneElement) {
-            userPhoneElement.textContent = "N/A";
-            userPhoneElement.parentElement.style.display = 'block'; // Ensure it's visible
-        }
-        
-        // Change "Logout" button to "Login" button
-        if (logoutBtn) {
-            logoutBtn.textContent = 'Login';
-            logoutBtn.style.display = 'block';
-            logoutBtn.style.background = '#267226'; // Brand Green
-            logoutBtn.style.color = '#fff';
-            
-            logoutBtn.onclick = (e) => {
-                e.stopPropagation();
+        if (loginLink) {
+            loginLink.onclick = (e) => {
+                e.preventDefault();
                 window.location.href = 'login.html';
             };
-        }
-        
-        // Still allow hover for info
-        if (profileContainer && profileDropdown) {
-            profileContainer.addEventListener('mouseenter', () => {
-                profileDropdown.classList.add('active-dropdown');
-            });
-            profileContainer.addEventListener('mouseleave', () => {
-                profileDropdown.classList.remove('active-dropdown');
-            });
         }
     }
 
@@ -1748,7 +1715,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Actually, better to just reconstruct it manually or find the button.
             // But since many products are loaded via API, we just reconstruct the cart UI.
             const newContent = createSelectedProductsContent(data.image, data.name, data.price, data.unit, data.discount, 'No', data.addedTime, data.id, data.farmerName, data.stock, data.actualFarmerId);
-            
+
             // Setup removeBtn
             const removeBtn = newContent.querySelector('.remove-item-btn');
             removeBtn.onclick = () => {
@@ -1756,13 +1723,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Also reset any button on the page if it exists
                 const originBtn = Array.from(document.querySelectorAll('.product-wrap')).find(p => p.querySelector('.product-name').textContent === data.name);
                 if (originBtn) {
-                   const btn = originBtn.querySelector('.add-to-cart-btn');
-                   if (btn) btn.setAttribute('data-added', 'false');
-                   const p = btn.querySelector('p');
-                   if (p) {
-                       p.style.background = '#459122';
-                       p.innerHTML = '<span class="fa-solid fa-cart-plus"></span> Add to Cart';
-                   }
+                    const btn = originBtn.querySelector('.add-to-cart-btn');
+                    if (btn) btn.setAttribute('data-added', 'false');
+                    const p = btn.querySelector('p');
+                    if (p) {
+                        p.style.background = '#459122';
+                        p.innerHTML = '<span class="fa-solid fa-cart-plus"></span> Add to Cart';
+                    }
                 }
                 countSelectedItem--;
                 totalSelectedCounter.innerHTML = countSelectedItem;
@@ -1774,7 +1741,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const addToBuyBtn = newContent.querySelector('.add-to-buy-btn');
             const itemQuantity = newContent.querySelector('input[type="number"]');
-            
+
             let addedForBuyLocal = false;
             let shoppingCartItemLocal = null;
 
@@ -1785,16 +1752,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     addToBuyBtn.style.background = 'crimson';
                     addToBuyBtn.innerHTML = 'Added';
                     itemQuantity.setAttribute('disabled', 'true');
-                    
-                    const presentPrice = (data.price - ((data.discount/100) * data.price)).toFixed(2);
+
+                    const presentPrice = (data.price - ((data.discount / 100) * data.price)).toFixed(2);
                     shoppingCartItemLocal = createShoppingCartItem(data.name, data.price, data.unit, data.discount, presentPrice, q, data.buyData ? (data.buyData.id || data.id) : data.id, data.actualFarmerId || (data.buyData ? data.buyData.farmerId : null));
                     shoppingDetailsContent.appendChild(shoppingCartItemLocal);
-                    
+
                     if (data.unit === 'kg') countTotalWeight += q;
                     else if (data.unit === 'dzn') countTotalDozen += q;
                     else if (data.unit === 'pcs') countTotalPieces += q;
                     countTotalAmount += presentPrice * q;
-                    
+
                     addedForBuyLocal = true;
                     newContent.style.display = 'none'; // Hide from sidebar
                     saveCartToStorage();
@@ -1808,13 +1775,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         itemQuantity.removeAttribute('disabled');
                         shoppingDetailsContent.removeChild(shoppingCartItemLocal);
                         newContent.style.display = 'flex'; // Show again in sidebar
-                        
-                        const presentPrice = (data.price - ((data.discount/100) * data.price)).toFixed(2);
+
+                        const presentPrice = (data.price - ((data.discount / 100) * data.price)).toFixed(2);
                         if (data.unit === 'kg') countTotalWeight -= q;
                         else if (data.unit === 'dzn') countTotalDozen -= q;
                         else if (data.unit === 'pcs') countTotalPieces -= q;
                         countTotalAmount -= presentPrice * q;
-                        
+
                         addedForBuyLocal = false;
                         newContent.style.display = 'flex'; // Show again in Selected Products
                         saveCartToStorage();
@@ -1844,7 +1811,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Avoid duplicates
             let existing = false;
             Array.from(cartWishlistArea.children).forEach(c => {
-               if (c.querySelector('.product-name').textContent === data.name) existing = true;
+                if (c.querySelector('.product-name').textContent === data.name) existing = true;
             });
             if (existing) return;
 
@@ -1868,15 +1835,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
             `;
-            
+
             favWrap.querySelector('.add-to-favorite').onclick = () => {
                 activeConfirmationBox('Remove item from wishlist?');
                 removeConfirmBtn.onclick = () => {
-                   cartWishlistArea.removeChild(favWrap);
-                   countFavoriteItem--;
-                   totalFavoriteCounter.innerHTML = countFavoriteItem > 0 ? countFavoriteItem : 'No item found';
-                   saveFavoritesToStorage();
-                   removeConfirmationBox();
+                    cartWishlistArea.removeChild(favWrap);
+                    countFavoriteItem--;
+                    totalFavoriteCounter.innerHTML = countFavoriteItem > 0 ? countFavoriteItem : 'No item found';
+                    saveFavoritesToStorage();
+                    removeConfirmationBox();
                 };
             };
 

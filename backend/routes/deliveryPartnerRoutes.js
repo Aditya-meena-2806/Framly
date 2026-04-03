@@ -42,6 +42,11 @@ router.post("/login", async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
 
+        // Check if account is active
+        if (!user.active) {
+            return res.status(403).json({ message: "Your account is deactivated. Please contact admin." });
+        }
+
         res.json({ 
             id: user._id, 
             name: user.name, 
@@ -58,6 +63,14 @@ router.post("/login", async (req, res) => {
 router.get("/profile/:id", async (req, res) => {
     try {
         const partner = await DeliveryPartner.findById(req.params.id);
+        if (!partner) return res.status(404).json({ message: "Partner not found" });
+
+        // If deactivated, we allow viewing profile with a flag or block? 
+        // Better block so frontend can redirect to login/error.
+        if (!partner.active) {
+            return res.status(403).json({ message: "Account is deactivated", active: false });
+        }
+
         res.json(partner);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -171,6 +184,7 @@ router.put("/update-status/:orderId", async (req, res) => {
         
         if (status === "Delivered") {
             updateData.deliveredAt = new Date();
+            updateData.paymentStatus = "Completed"; // Mark as completed on final delivery
         }
 
         const order = await Order.findByIdAndUpdate(req.params.orderId, updateData, { new: true })
@@ -190,6 +204,22 @@ router.put("/update-status/:orderId", async (req, res) => {
         // ------------------------------------
 
         res.json(order);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// Collect Payment for COD Order
+
+// Collect Payment for COD Order
+router.put("/collect-payment/:orderId", async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.orderId);
+        if (!order) return res.status(404).json({ message: "Order not found" });
+        
+        order.paymentStatus = "Paid";
+        await order.save();
+        res.json({ message: "Payment collected successfully", order });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }

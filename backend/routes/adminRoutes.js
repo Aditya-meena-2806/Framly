@@ -135,7 +135,20 @@ router.put("/approve-farmer/:id", async (req, res) => {
     }
 });
 
-// Get All Customers
+// Toggle Farmer Block Status
+router.put("/farmer-status/:id", async (req, res) => {
+    try {
+        const farmer = await Farmer.findById(req.params.id);
+        if (!farmer) return res.status(404).json({ message: "Farmer not found" });
+        farmer.active = !farmer.active;
+        await farmer.save();
+        res.json({ message: `Farmer ${farmer.active ? 'Activated' : 'Blocked'} Successfully` });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Load All Customers
 router.get("/customers", async (req, res) => {
     try {
         const users = await require("../models/User").find({});

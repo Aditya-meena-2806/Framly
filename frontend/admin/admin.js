@@ -108,8 +108,13 @@ async function loadFarmers() {
         farmers.forEach(f => {
             const statusStyle = f.approved ? "color: #27ae60; background: #e8f8f0;" : "color: #f39c12; background: #fef5e7;";
             const statusText = f.approved ? "Verified" : "Pending";
+            
+            const activeStyle = f.active ? "color: #27ae60; background: #e8f8f0;" : "color: #e74c3c; background: #fff0f0;";
+            const activeText = f.active ? "Active" : "Blocked";
+            const blockBtnText = f.active ? "Block" : "Unblock";
+
             const actionBtn = f.approved ? 
-                `<span style="color: #bdc3c7; font-size: 0.85rem;"><i class="fa-solid fa-circle-check"></i> Already Verified</span>` : 
+                `<span style="color: #bdc3c7; font-size: 0.85rem;"><i class="fa-solid fa-circle-check"></i> Verified</span>` : 
                 `<button class="action-btn approve-btn" onclick="approveFarmer('${f._id}')"><i class="fa-solid fa-user-plus"></i> Approve</button>`;
 
             list.innerHTML += `
@@ -117,13 +122,25 @@ async function loadFarmers() {
                     <td style="font-weight: 600;">${f.name}</td>
                     <td>${f.email}</td>
                     <td><span class="status-badge" style="${statusStyle}">${statusText}</span></td>
+                    <td><span class="status-badge" style="${activeStyle}">${activeText}</span></td>
                     <td>${actionBtn}</td>
                     <td>
-                        <button class="action-btn" style="background:#fff; color:#e67e22; border:1px solid #e67e22;" onclick="viewFarmerHistory('${f._id}')"><i class="fa-solid fa-clock-rotate-left"></i> Full History</button>
+                        <button class="action-btn" style="background:#fff; color:#e74c3c; border:1px solid #e74c3c;" onclick="toggleFarmerStatus('${f._id}')"><i class="fa-solid fa-lock"></i> ${blockBtnText}</button>
+                    </td>
+                    <td>
+                        <button class="action-btn" style="background:#fff; color:#e67e22; border:1px solid #e67e22;" onclick="viewFarmerHistory('${f._id}')"><i class="fa-solid fa-clock-rotate-left"></i> History</button>
                     </td>
                 </tr>
             `;
         });
+    } catch (err) { console.error(err); }
+}
+
+async function toggleFarmerStatus(id) {
+    if (!confirm("Are you sure you want to change this farmer's status?")) return;
+    try {
+        const res = await fetch(`${API_URL}/farmer-status/${id}`, { method: "PUT" });
+        if(res.ok) loadFarmers();
     } catch (err) { console.error(err); }
 }
 
