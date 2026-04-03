@@ -5,7 +5,11 @@ const farmerSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     phone: { type: String },
-    location: String,
+    address: { type: String },
+    location: {
+        lat: { type: Number },
+        lng: { type: Number }
+    },
     approved: { type: Boolean, default: false }
 }, { timestamps: true });
 

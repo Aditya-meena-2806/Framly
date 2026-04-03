@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner Command Center | Farmly</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+    <link rel="stylesheet" href="delivery-style.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo">Farmly <span>Partner</span></div>
+        <div class="partner-meta">
+            <div class="partner-badge" id="phoneBadge" style="background:#f1f5f9; color:#475569;">
+                <i class="fa-solid fa-phone"></i> <span id="partnerPhoneDisplay">Phone</span>
+            </div>
+            <div class="partner-badge" id="vehicleBadge" style="background:#eff6ff; color:#2563eb;">
+                <i class="fa-solid fa-motorcycle"></i> <span id="partnerVehicleDisplay">Vehicle</span>
+            </div>
+            <div class="partner-badge" id="partnerNameBadge" onclick="toggleDropdown()">
+                <i class="fa-solid fa-user-check"></i> <span id="partnerNameDisplay">Partner</span>
+                <div id="profileDropdown" class="profile-dropdown">
+                    <div class="profile-header">
+                        <h5 id="ddName">Name</h5>
+                        <p id="ddEmail">Email@farmly.com</p>
+                    </div>
+                    <div class="dropdown-item">
+                        <i class="fa-solid fa-phone"></i> <span id="ddPhone">Phone</span>
+                    </div>
+                    <div class="dropdown-item" onclick="toggleView()">
+                        <i class="fa-solid fa-clock-rotate-left"></i> Order History
+                    </div>
+                    <div class="dropdown-item">
+                        <i class="fa-solid fa-wallet"></i> <b>Earned: </b> <span id="ddEarnings">₹0</span>
+                    </div>
+
+                    <a href="contact-us.html" class="dropdown-item"
+                        style="color: #2563eb; text-decoration:none; font-weight:700;">
+                        <i class="fa-solid fa-headset"></i> Contact Support
+                    </a>
+                    <div class="dropdown-item" onclick="logout()">
+                        <i class="fa-solid fa-power-off"></i> Logout
+                    </div>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <i class="fa-solid fa-power-off"></i> Logout
+            </button>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <!-- Stats Row -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#e8f8f0; color:#27ae60;"><i class="fa-solid fa-wallet"></i>
+                </div>
+                <div class="stat-info">
+                    <h4>Total Earnings</h4>
+                    <p id="totalEarnings">₹0.00</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#ecfdf5; color:#059669;"><i
+                        class="fa-solid fa-check-double"></i></div>
+                <div class="stat-info">
+                    <h4>Deliveries</h4>
+                    <p id="deliveryCount">0</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#fff7ed; color:#f97316;"><i class="fa-solid fa-bolt"></i></div>
+                <div>
+                    <label>TODAY'S DELIVERIES</label>
+                    <h2 id="todayDeliveries">0</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-layout" id="trackingView">
+            <div class="map-container">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <h3 style="margin:0;"><i class="fa-solid fa-location-crosshairs"></i> Live Dispatch</h3>
+                    <button class="btn-accept" style="width:auto; padding:8px 20px; background:#34495e;"
+                        onclick="toggleView()">
+                        <i class="fa-solid fa-clock-rotate-left"></i> View History
+                    </button>
+                </div>
+                <div id="map"></div>
+
+                <!-- Active Order Container (Floating Style) -->
+                <div id="activeOrderSection" style="display:none; margin-top:20px;">
+                    <div class="stat-card active-task-card">
+                        <div class="stat-icon active-icon-box"><i class="fa-solid fa-truck-ramp-box"></i></div>
+                        <div style="flex:1;">
+                            <h4 class="active-task-title">Active Delivery Task</h4>
+                            <div id="activeOrderDetail" style="font-size:0.95rem; margin-top:8px;"></div>
+                        </div>
+                        <div id="statusActions" class="status-actions-container"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="order-feed" id="availableOrdersSection">
+                <h4 style="margin-top:0;"><i class="fa-solid fa-box-open"></i> Available Orders</h4>
+                <div id="ordersList">
+                    <div style="text-align:center; color:#94a3b8; padding-top:100px;">
+                        <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+                        <p>Finding tasks near you...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- History View -->
+        <div id="historyView" style="display:none;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3 style="margin:0;"><i class="fa-solid fa-clock-rotate-left"></i> Performance History</h3>
+                <button class="btn-accept" style="width:auto; padding:8px 20px;" onclick="toggleView()">
+                    <i class="fa-solid fa-map-location-dot"></i> Back to Tracking
+                </button>
+            </div>
+            <div id="historyList" class="stats-grid"
+                style="grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));"></div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const partnerId = localStorage.getItem("partnerId");
+        const partnerName = localStorage.getItem("partnerName");
+        if (!partnerId) window.location.href = "login.html";
+
+        document.getElementById("partnerNameDisplay").innerText = partnerName;
+
+        async function fetchPartnerProfile() {
+            try {
+                const res = await fetch(`${API_URL}/profile/${partnerId}`);
+                if (res.ok) {
+                    const profile = await res.json();
+                    document.getElementById("partnerPhoneDisplay").innerText = profile.phone || "No Phone";
+                    document.getElementById("partnerVehicleDisplay").innerText = profile.vehicleType || "Farmly";
+
+                    // Populate Dropdown
+                    document.getElementById("ddName").innerText = profile.name;
+                    document.getElementById("ddEmail").innerText = profile.email;
+                    document.getElementById("ddPhone").innerText = profile.phone || "No Phone";
+
+                    // Anchor verified email for other terminals
+                    localStorage.setItem("partnerEmail", profile.email);
+
+                    // Update Icon based on vehicle
+                    const vIcon = document.querySelector("#vehicleBadge i");
+                    if (profile.vehicleType === "Cycle") vIcon.className = "fa-solid fa-bicycle";
+                    else if (profile.vehicleType === "Scooter") vIcon.className = "fa-solid fa-moped";
+                }
+            } catch (err) { console.error("Profile sync error"); }
+        }
+
+        let map, partnerMarker, pickupMarker, dropMarker;
+        let availableMarkers = [];
+        let previousOrderCount = 0;
+        const alertSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+
+        const API_URL = "http://localhost:5000/api/delivery";
+
+        // Initialize Map
+        map = L.map('map').setView([20.5937, 78.9629], 5);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+        function updateLiveLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(async (pos) => {
+                    const { latitude, longitude } = pos.coords;
+                    
+                    // Update Partner Marker
+                    if (partnerMarker) {
+                        partnerMarker.setLatLng([latitude, longitude]);
+                    } else {
+                        partnerMarker = L.marker([latitude, longitude], {
+                            icon: L.icon({
+                                iconUrl: 'https://cdn-icons-png.flaticon.com/512/71/71200.png',
+                                iconSize: [35, 35]
+                            })
+                        }).addTo(map).bindPopup("You are here");
+                    }
+
+                    // Only snap view if no active task is trying to show multiple points
+                    // or if it's the first time
+                    if (!pickupMarker && !dropMarker) {
+                        map.setView([latitude, longitude], 14);
+                    } else {
+                        updateMapBounds();
+                    }
+
+                    await fetch(`${API_URL}/update-location/${partnerId}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ lat: latitude, lng: longitude })
+                    });
+                }, (err) => console.error("Geolocation error:", err), {
+                    enableHighAccuracy: true,
+                    maximumAge: 30000,
+                    timeout: 27000
+                });
+            }
+        }
+
+        function updateMapBounds() {
+            if (!map) return;
+            let points = [];
+            if (partnerMarker) points.push(partnerMarker.getLatLng());
+            if (pickupMarker) points.push(pickupMarker.getLatLng());
+            if (dropMarker) points.push(dropMarker.getLatLng());
+
+            if (points.length > 1) {
+                const bounds = L.latLngBounds(points);
+                map.flyToBounds(bounds, { padding: [50, 50], duration: 1.5 });
+            } else if (points.length === 1) {
+                map.flyTo(points[0], 15, { duration: 1.5 });
+            }
+        }
+
+        async function loadOrders() {
+            try {
+                const res = await fetch(`${API_URL}/available-orders`);
+                const orders = await res.json();
+                
+                // Audio Notification for new orders
+                if (orders.length > previousOrderCount) {
+                    alertSound.play().catch(e => console.log("Audio play blocked"));
+                    // Optional: Show a temporary visual toast if needed
+                }
+                previousOrderCount = orders.length;
+
+                const list = document.getElementById("ordersList");
+                list.innerHTML = orders.length === 0 ? '<div style="text-align:center; padding:50px; color:#94a3b8;">No orders roaming right now.</div>' : "";
+
+                // Clear old available markers
+                availableMarkers.forEach(m => map.removeLayer(m));
+                availableMarkers = [];
+
+                // Persistent dismissal filtering
+                const dismissed = JSON.parse(localStorage.getItem(`dismissed_tasks_${partnerId}`) || "[]");
+                const visibleOrders = orders.filter(o => !dismissed.includes(o._id));
+
+                visibleOrders.forEach(order => {
+                    // Safety check: Find the first item with a valid farmer
+                    let farmer = null;
+                    for (let item of order.items) {
+                        if (item.farmerId && item.farmerId.name) {
+                            farmer = item.farmerId;
+                            break;
+                        }
+                    }
+
+                    if (!farmer) {
+                        console.warn("Skipping order due to missing farmer data:", order._id);
+                        return;
+                    }
+
+                    const customer = order.userId;
+                    const payout = order.payout; // Fixed: Use backend payout (10%)
+
+                    const div = document.createElement("div");
+                    div.className = "order-card";
+                    div.innerHTML = `
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                            <span style="font-weight:800; color:var(--dark);">#${order._id.slice(-6).toUpperCase()}</span>
+                            <span class="partner-badge" style="margin:0;">EARN ₹${payout}</span>
+                        </div>
+                        <div class="badge badge-pickup"><i class="fa-solid fa-wheat-awn"></i> PICKUP: ${farmer.name}</div>
+                        <div style="font-size:0.85rem; color:#64748b; margin-bottom:8px; padding-left:13px; border-left:2px dashed #cbd5e1;">${farmer.address || 'Address N/A'}</div>
+                        
+                        <div class="badge badge-drop"><i class="fa-solid fa-house-chimney-user"></i> DROP: ${customer ? customer.name : 'Guest'}</div>
+                        <div style="font-size:0.85rem; color:#64748b; margin-bottom:15px; padding-left:13px;">${customer ? customer.address : order.address || 'Address N/A'}</div>
+                        
+                        <div style="display:flex; gap:10px;">
+                            <button class="btn-accept" onclick="acceptOrder('${order._id}')" style="flex:2;">Accept Task</button>
+                            <button class="btn-accept" onclick="dismissTask('${order._id}')" style="flex:1; background:#ef4444; padding:8px;">Reject</button>
+                        </div>
+                    `;
+                    list.appendChild(div);
+
+                    // Add Pickup Marker to Map
+                    if (farmer.location && farmer.location.lat) {
+                        const m = L.marker([farmer.location.lat, farmer.location.lng], {
+                            icon: L.divIcon({
+                                className: 'map-pickup-pin',
+                                html: '<div style="background:#e67e22; color:white; padding:5px; border-radius:50%; width:30px; height:30px; display:flex; align-items:center; justify-content:center; border:2px solid white; box-shadow:0 2px 5px rgba(0,0,0,0.2);"><i class="fa-solid fa-parachute-box"></i></div>'
+                            })
+                        }).addTo(map).bindPopup(`<b>Pickup: ${farmer.name}</b><br>${farmer.address}`);
+                        availableMarkers.push(m);
+                    }
+                });
+            } catch (err) { console.error(err); }
+        }
+
+        async function acceptOrder(orderId) {
+            try {
+                const res = await fetch(`${API_URL}/accept-order/${orderId}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ partnerId })
+                });
+                if (res.ok) {
+                    alert("Order Accepted! Head to pick-up location.");
+                    checkActiveOrder();
+                }
+            } catch (err) { }
+        }
+
+        async function checkActiveOrder() {
+            try {
+                const res = await fetch(`http://localhost:5000/api/order/partner/${partnerId}`);
+                const order = await res.json();
+
+                if (order && order.status !== "Delivered" && order.status !== "Cancelled") {
+                    document.getElementById("activeOrderSection").style.display = "block";
+                    document.getElementById("availableOrdersSection").style.display = "none";
+
+                    // Safety Check: Legacy items might lack farmer data
+                    let farmer = null;
+                    if (order.items && order.items.length > 0) {
+                        for (let item of order.items) {
+                            if (item.farmerId && item.farmerId.name) {
+                                farmer = item.farmerId;
+                                break;
+                            }
+                        }
+                    }
+
+                    const customer = order.userId;
+                    const isPickedUp = order.status === "Picked Up" || order.status === "Shipped" || order.status === "In-Transit"; 
+
+                    // Destination logic: use order specific location if set, otherwise customer profile location
+                    const dropLoc = order.location && order.location.lat ? order.location : (customer && customer.location && customer.location.lat ? customer.location : null);
+                    const pickupLoc = farmer && farmer.location && farmer.location.lat ? farmer.location : null;
+
+                    if (!farmer) {
+                        document.getElementById("activeOrderDetail").innerHTML = `
+                            <div style="background:#fee2e2; padding:15px; border-radius:10px; border:1px solid #fecaca; color:#991b1b;">
+                                <i class="fa-solid fa-triangle-exclamation"></i> <b>Incomplete Task Data</b><br>
+                                This order was placed before the tracking system was active. 
+                                We cannot determine the pickup location.
+                            </div>
+                        `;
+                        document.getElementById("statusActions").innerHTML = `
+                             <button class="btn-accept" style="background:#dc2626; width:100%; mt:10px;" onclick="cancelDeadTask('${order._id}')">
+                                <i class="fa-solid fa-trash-can"></i> Cancel Unfulfillable Order
+                            </button>
+                        `;
+                        return;
+                    }
+
+                    document.getElementById("activeOrderDetail").innerHTML = `
+                        <div style="display:flex; flex-direction:column; gap:8px;">
+                            <div style="background:#fffbeb; padding:12px; border-radius:10px; border:1px solid #fef3c7; color:#92400e; display:flex; justify-content:space-between; align-items:center; ${isPickedUp ? 'opacity:0.6' : ''}">
+                                <div>
+                                    <i class="fa-solid fa-wheat-awn"></i> <b>${isPickedUp ? 'Picked Up From:' : 'Navigate to Pickup:'}</b><br>
+                                    ${farmer.name} | ${farmer.address || 'Unknown Farm Address'}
+                                </div>
+                                ${pickupLoc ? `<a href="https://www.google.com/maps/dir/?api=1&destination=${pickupLoc.lat},${pickupLoc.lng}" target="_blank" style="background:#92400e; color:white; padding:8px 12px; border-radius:8px; text-decoration:none; font-size:0.75rem; font-weight:700;"><i class="fa-solid fa-diamond-turn-right"></i> Pass</a>` : ''}
+                            </div>
+                            <div style="background:#f0fdf4; padding:12px; border-radius:10px; border:1px solid #dcfce7; color:#166534; display:flex; justify-content:space-between; align-items:center; ${!isPickedUp ? 'opacity:0.6' : ''}">
+                                <div>
+                                    <i class="fa-solid fa-house-chimney-user"></i> <b>${isPickedUp ? 'Navigate to Drop:' : 'Future Drop:'}</b><br>
+                                    ${customer ? customer.name : 'Guest Customer'} | ${customer ? (customer.address || order.address) : (order.address || 'No Drop Address')}
+                                </div>
+                                ${dropLoc ? `<a href="https://www.google.com/maps/dir/?api=1&destination=${dropLoc.lat},${dropLoc.lng}" target="_blank" style="background:#166534; color:white; padding:8px 12px; border-radius:8px; text-decoration:none; font-size:0.75rem; font-weight:700;"><i class="fa-solid fa-diamond-turn-right"></i> Drop</a>` : ''}
+                            </div>
+                        </div>
+                    `;
+
+                    // Smart Button labels
+                    let nextStatus = "";
+                    let btnLabel = "";
+                    let btnIcon = "";
+
+                    // MANDATORY: Clear stale markers to prevent "Ghost Pickup" pins
+                    if (pickupMarker) map.removeLayer(pickupMarker);
+                    if (dropMarker) map.removeLayer(dropMarker);
+
+                    if (order.status === "Accepted") {
+                        nextStatus = "Picked Up";
+                        btnLabel = "Collect Order";
+                        btnIcon = "fa-box-open";
+                        if (pickupLoc) {
+                            focusMap(pickupLoc.lat, pickupLoc.lng, `<b>Pickup: ${farmer.name}</b>`, "pickup");
+                        }
+                    } else if (isPickedUp) {
+                        nextStatus = (order.status === "Picked Up" || order.status === "In-Transit") ? "Shipped" : "Delivered";
+                        btnLabel = (order.status === "Picked Up" || order.status === "In-Transit") ? "Start Delivery" : "Mark as Delivered";
+                        btnIcon = "fa-truck-fast";
+                        
+                        if (dropLoc) {
+                            focusMap(dropLoc.lat, dropLoc.lng, `<b>Deliver to: ${customer ? customer.name : 'Customer'}</b>`, "drop");
+                        } else {
+                            // High-Visibility fallback UI for missing drop coordinates
+                            document.getElementById("activeOrderDetail").innerHTML += `
+                                <div style="background:#fee2e2; padding:10px; border-radius:10px; margin-top:10px; border:1px solid #fecaca; color:#991b1b; font-size:0.8rem; font-weight:600;">
+                                    <i class="fa-solid fa-circle-exclamation"></i> GPS target missing for this drop. Use the written address above.
+                                </div>
+                            `;
+                        }
+                    }
+
+                    if (nextStatus) {
+                        document.getElementById("statusActions").innerHTML = `
+                            <div style="display:flex; flex-direction:column; gap:10px;">
+                                <button class="btn-accept" onclick="updateStatus('${order._id}', '${nextStatus}')">
+                                    <i class="fa-solid ${btnIcon}"></i> ${btnLabel}
+                                </button>
+                                ${order.status === 'Accepted' ? `
+                                <button class="btn-accept" style="background:#dc2626; padding:8px;" onclick="rejectTask('${order._id}')">
+                                    <i class="fa-solid fa-circle-xmark"></i> Reject Task
+                                </button>` : ''}
+                            </div>
+                        `;
+                    }
+                } else {
+                    document.getElementById("activeOrderSection").style.display = "none";
+                    document.getElementById("availableOrdersSection").style.display = "block";
+                }
+            } catch (err) { }
+        }
+
+        function focusMap(lat, lng, label, type = "pickup") {
+            if (!map || !lat || !lng) return;
+
+            const iconHtml = type === "pickup" 
+                ? `<div class="active-pin-content" style="background:#e67e22;"><i class="fa-solid fa-parachute-box fa-beat"></i></div>`
+                : `<div class="active-pin-content" style="background:#2ecc71;"><i class="fa-solid fa-house-chimney-user fa-beat"></i></div>`;
+
+            const icon = L.divIcon({
+                className: 'active-pin',
+                html: iconHtml,
+                iconSize: [40, 40],
+                iconAnchor: [20, 20]
+            });
+
+            if (type === "pickup") {
+                if (pickupMarker) map.removeLayer(pickupMarker);
+                pickupMarker = L.marker([lat, lng], { icon }).addTo(map).bindPopup(label).openPopup();
+            } else {
+                if (dropMarker) map.removeLayer(dropMarker);
+                dropMarker = L.marker([lat, lng], { icon }).addTo(map).bindPopup(label).openPopup();
+            }
+
+            updateMapBounds();
+        }
+
+        async function updateStatus(orderId, status) {
+            await fetch(`${API_URL}/update-status/${orderId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ status })
+            });
+            checkActiveOrder();
+        }
+
+        async function rejectTask(orderId) {
+            if (confirm("Are you sure you want to reject this task? It will be available for other partners.")) {
+                try {
+                    const res = await fetch(`${API_URL}/reject-order/${orderId}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" }
+                    });
+                    if (res.ok) {
+                        alert("Task Rejected.");
+                        checkActiveOrder();
+                        loadOrders();
+                    }
+                } catch (err) { console.error(err); }
+            }
+        }
+
+        function dismissTask(orderId) {
+            const list = JSON.parse(localStorage.getItem(`dismissed_tasks_${partnerId}`) || "[]");
+            if (!list.includes(orderId)) {
+                list.push(orderId);
+                localStorage.setItem(`dismissed_tasks_${partnerId}`, JSON.stringify(list));
+            }
+            loadOrders(); // Instant refresh to hide the rejected task
+        }
+
+        async function cancelDeadTask(orderId) {
+            if (confirm("This task lack location data. Mark as Cancelled and remove from your list?")) {
+                try {
+                    const res = await fetch(`${API_URL}/cancel-order/${orderId}`, {
+                        method: "PUT"
+                    });
+                    if (res.ok) {
+                        alert("Task officially cancelled.");
+                        checkActiveOrder();
+                    }
+                } catch (err) { console.error(err); }
+            }
+        }
+
+        async function loadHistory() {
+            try {
+                const res = await fetch(`${API_URL}/history/${partnerId}`);
+                const data = await res.json();
+                const { history, totalEarnings, count } = data;
+                
+                const list = document.getElementById("historyList");
+                list.innerHTML = "";
+
+                history.forEach(order => {
+                    const payout = order.payout;
+                    const div = document.createElement("div");
+                    div.className = "stat-card history-card-flex";
+                    div.innerHTML = `
+                        <div class="history-card-header">
+                            <span class="history-status-tag">COMPLETED</span>
+                            <span class="history-date-tag">${new Date(order.deliveredAt).toLocaleDateString()}</span>
+                        </div>
+                        <div class="history-order-id">Order #${order._id.slice(-6).toUpperCase()}</div>
+                        <div class="history-address"><i class="fa-solid fa-location-dot"></i> ${order.userId ? order.userId.address : (order.address || 'Delivered')}</div>
+                        <div class="history-payout-footer">Payout: ₹${payout}</div>
+                    `;
+                    list.appendChild(div);
+                });
+
+                document.getElementById("totalEarnings").innerText = `₹${totalEarnings}`;
+                document.getElementById("ddEarnings").innerText = `₹${totalEarnings}`;
+                document.getElementById("deliveryCount").innerText = count;
+                document.getElementById("todayDeliveries").innerText = data.todayCount || 0;
+            } catch (err) { }
+        }
+
+        function toggleDropdown() {
+            document.getElementById("profileDropdown").classList.toggle("show");
+        }
+
+        // Close dropdown when clicking outside
+        window.onclick = function (event) {
+            if (!event.target.closest('#partnerNameBadge')) {
+                const dropdowns = document.getElementsByClassName("profile-dropdown");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    dropdowns[i].classList.remove('show');
+                }
+            }
+        }
+        
+        let isHistoryView = false;
+        function toggleView() {
+            isHistoryView = !isHistoryView;
+            document.getElementById("trackingView").style.display = isHistoryView ? "none" : "grid";
+            document.getElementById("historyView").style.display = isHistoryView ? "block" : "none";
+            if (isHistoryView) loadHistory();
+        }
+
+        function logout() { localStorage.clear(); window.location.href = "login.html"; }
+
+        fetchPartnerProfile();
+        updateLiveLocation();
+        loadOrders();
+        checkActiveOrder();
+        loadHistory();
+        setInterval(loadOrders, 10000);
+    </script>
+</body>
+
+</html>

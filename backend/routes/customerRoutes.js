@@ -86,11 +86,26 @@ router.get("/profile/:id", async (req, res) => {
             name: user.name || "N/A",
             email: user.email || "N/A",
             phone: user.phone || "N/A",
-            address: user.address || "N/A"
+            address: user.address || "N/A",
+            location: user.location || "N/A"
         });
     } catch (err) {
         console.error("Profile Fetch Error for ID:", req.params.id, err);
         res.status(500).json({ version: "v4_robust", error: err.message });
+    }
+});
+
+// Update Customer Location
+router.put("/profile/update-location/:id", async (req, res) => {
+    try {
+        const { address, location } = req.body;
+        const user = await User.findByIdAndUpdate(req.params.id, {
+            address,
+            location
+        }, { new: true });
+        res.json({ message: "Location updated successfully", user });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
 });
 

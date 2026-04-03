@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const urlParams = new URLSearchParams(window.location.search);
     
     if (path.includes("admin-orders.html")) {
-        loadOrderHistory(urlParams.get("userId"));
+        loadOrderHistory(urlParams.get("userId"), urlParams.get("partnerId"));
     } else if (path.includes("admin-products.html")) {
         loadProductHistory(urlParams.get("farmerId"));
     } else if (path.includes("admin-product-status.html")) {
@@ -13,9 +13,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-async function loadOrderHistory(userId = null) {
+async function loadOrderHistory(userId = null, partnerId = null) {
     try {
-        const query = userId ? `?userId=${userId}` : "";
+        let query = "";
+        if (userId) query = `?userId=${userId}`;
+        else if (partnerId) query = `?partnerId=${partnerId}`;
+
         const response = await fetch(`${API_URL}/orders${query}`);
         const orders = await response.json();
         const list = document.getElementById("historyList");
@@ -25,6 +28,10 @@ async function loadOrderHistory(userId = null) {
         if (userId && orders.length > 0) {
             document.getElementById("historyTitle").innerHTML = `${orders[0].userId.name}'s <span>Order History</span>`;
             document.getElementById("historySub").textContent = `Viewing transactions for ${orders[0].userId.email}`;
+        } else if (partnerId && orders.length > 0) {
+            const partnerName = orders[0].deliveryPartnerId ? orders[0].deliveryPartnerId.name : "Partner";
+            document.getElementById("historyTitle").innerHTML = `${partnerName}'s <span>Delivery History</span>`;
+            document.getElementById("historySub").textContent = `Viewing completed fulfillments for ${orders[0].deliveryPartnerId.email}`;
         }
 
         list.innerHTML = "";
@@ -39,6 +46,17 @@ async function loadOrderHistory(userId = null) {
 
         orders.forEach(o => {
             const items = o.items.map(i => `${i.name} (${i.quantity})`).join(", ");
+            
+            // Generate review display logic
+            let reviewHtml = `<span style="color:#cbd5e1; font-size:0.75rem;">No feedback</span>`;
+            if (o.review && o.review.rating) {
+                const stars = '★'.repeat(o.review.rating) + '☆'.repeat(5 - o.review.rating);
+                reviewHtml = `
+                    <div style="color:#eab308; font-size:1rem;">${stars}</div>
+                    <div style="color:#64748b; font-size:0.75rem; font-style:italic; max-width:150px; overflow:hidden; text-overflow:ellipsis;" title="${o.review.comment}">"${o.review.comment}"</div>
+                `;
+            }
+
             list.innerHTML += `
                 <tr>
                     <td style="font-family: monospace; font-size: 0.85rem;">#${o._id.slice(-6).toUpperCase()}</td>
@@ -49,6 +67,7 @@ async function loadOrderHistory(userId = null) {
                     <td style="font-weight:600; color:#2e7d32;">₹${o.totalAmount}</td>
                     <td style="font-size:0.85rem; color:#666;">${new Date(o.createdAt).toLocaleDateString()}</td>
                     <td style="font-size:0.85rem; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${items}">${items}</td>
+                    <td>${reviewHtml}</td>
                 </tr>
             `;
         });

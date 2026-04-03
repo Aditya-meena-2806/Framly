@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Partner Sign Up | Farmly</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="delivery-style.css">
+    <style>
+        /* OTP Overlay Styles */
+        .otp-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            backdrop-filter: blur(5px);
+        }
+        .otp-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .otp-card h3 { color: #2e7d32; margin-bottom: 15px; }
+        .otp-card p { color: #666; margin-bottom: 20px; font-size: 0.9rem; }
+        .otp-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 24px;
+            text-align: center;
+            letter-spacing: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            outline: none;
+        }
+        .otp-input:focus { border-color: #2e7d32; }
+        .otp-btn {
+            background: #2e7d32;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+        .otp-btn:hover { background: #1b5e20; }
+        .resend-link {
+            display: block;
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: #2e7d32;
+            text-decoration: none;
+        }
+        .change-email {
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #666;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-page-bg"></div>
+    <div class="login-wrapper">
+        <div class="signup-card">
+            <div class="header">
+                <div class="logo-icon"><i class="fa-solid fa-handshake"></i></div>
+                <h2>Become a <span>Partner</span></h2>
+                <p>Start your journey with Farmly. Earn while delivering freshness.</p>
+            </div>
+            
+            <form id="deliverySignupForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-user"></i>
+                            <input type="text" id="name" placeholder="John Doe" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-phone"></i>
+                            <input type="tel" id="deliveryPhone" placeholder="+91 98765 43210" required>
+                        </div>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Email Address</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-envelope"></i>
+                            <input type="email" id="email" placeholder="email@farmly.com" required>
+                        </div>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Vehicle Type</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-motorcycle"></i>
+                            <select id="vehicle" required>
+                                <option value="">Select your ride</option>
+                                <option value="Bike">🏍️ Motorbike</option>
+                                <option value="Scooter">🛵 Scooter</option>
+                                <option value="Cycle">🚲 Bicycle</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="password" placeholder="••••••••" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="confirmPassword" placeholder="••••••••" required>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="login-btn">Register as Partner <i class="fa-solid fa-paper-plane"></i></button>
+            </form>
+            
+            <div class="links">
+                Already a partner? <a href="login.html">Login here</a><br>
+                <a href="../login.html" class="portal-link">← Choose Different Portal</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- OTP Verification Overlay -->
+    <div id="otpOverlay" class="otp-overlay">
+        <div class="otp-card">
+            <div class="header">
+                <h3>Email Verification</h3>
+                <p>We've sent a 6-digit OTP to your email address. Please enter it below to complete registration.</p>
+            </div>
+            <input type="text" id="otpInput" class="otp-input" maxlength="6" placeholder="000000">
+            <button id="verifyOtpBtn" class="otp-btn">Verify & Join Network</button>
+            <a href="#" id="resendOtp" class="resend-link">Resend Code</a>
+            <div id="changeEmailBtn" class="change-email">Entered wrong email? Edit</div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("deliverySignupForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const phone = document.getElementById("deliveryPhone").value;
+            const vehicleType = document.getElementById("vehicle").value;
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+
+            if (password !== confirmPassword) return alert("Passwords do not match!");
+
+            // Prepare Delivery Partner Data
+            const userData = { name, email, password, phone, vehicleType };
+
+            try {
+                // Step 1: Request OTP
+                const submitBtn = document.querySelector(".login-btn");
+                submitBtn.innerText = "Sending Code...";
+                submitBtn.disabled = true;
+
+                const response = await fetch("http://localhost:5000/api/otp/send", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ role: 'delivery_partner', email, userData })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById("otpOverlay").style.display = "flex";
+                } else {
+                    alert(data.message || "Failed to send OTP");
+                }
+            } catch (err) { 
+                alert("Server error sending OTP."); 
+            } finally {
+                const submitBtn = document.querySelector(".login-btn");
+                submitBtn.innerHTML = 'Register as Partner <i class="fa-solid fa-paper-plane"></i>';
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Step 2: Verify OTP
+        document.getElementById("verifyOtpBtn").onclick = async () => {
+            const otp = document.getElementById("otpInput").value;
+            const email = document.getElementById("email").value;
+
+            if (otp.length !== 6) return alert("Enter 6-digit OTP");
+
+            try {
+                const btn = document.getElementById("verifyOtpBtn");
+                btn.innerText = "Verifying...";
+                btn.disabled = true;
+
+                const response = await fetch("http://localhost:5000/api/otp/verify", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, otp, role: 'delivery_partner' })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    alert("Account Verified & Joined!");
+                    window.location.href = "login.html";
+                } else {
+                    alert(data.message || "Invalid OTP");
+                }
+            } catch (err) {
+                alert("Verification failed.");
+            } finally {
+                document.getElementById("verifyOtpBtn").innerText = "Verify & Join Network";
+                document.getElementById("verifyOtpBtn").disabled = false;
+            }
+        };
+
+        // Close/Resend logic
+        document.getElementById("changeEmailBtn").onclick = () => {
+            document.getElementById("otpOverlay").style.display = "none";
+        };
+        
+        document.getElementById("resendOtp").onclick = (e) => {
+            e.preventDefault();
+            document.getElementById("deliverySignupForm").dispatchEvent(new Event('submit'));
+        };
+    </script>
+</body>
+</html>

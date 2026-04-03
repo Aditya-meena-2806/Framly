@@ -33,6 +33,8 @@ router.post("/place", async (req, res) => {
             if (product.quantity < item.quantity) {
                 return res.status(400).json({ message: `Insufficient stock for ${item.name}. Only ${product.quantity} ${product.unit} left.` });
             }
+            // Ensure farmerId is populated in the order item
+            item.farmerId = product.farmerId;
         }
 
         // Decrease stock
@@ -73,8 +75,9 @@ router.post("/place", async (req, res) => {
             userId,
             items,
             totalAmount,
-            address: address || "N/A",
-            phone: phone || user.phone || "N/A"
+            address: address || user.address || "N/A",
+            phone: phone || user.phone || "N/A",
+            location: user.location // Copy GPS coordinates for the delivery partner
         });
 
         await order.save();
@@ -87,17 +90,15 @@ router.post("/place", async (req, res) => {
         const orderSummary = `
             <ul>${itemsHtml}</ul>
             <p><strong>Total Amount: ₹${totalAmount}</strong></p>
-            <p><strong>Shipping Address:</strong> ${address || "N/A"}</p>
+            <p><strong>Shipping Address:</strong> ${address || user.address || "N/A"}</p>
         `;
 
         // Send Order Confirmation Email (Backgrounded)
-        console.log(`ORDER EMAIL TRIGGER: Attempting to send order confirmation to ${user.email}`);
         sendEmail(
             user.email,
             "Order Confirmed - Framly",
             orderEmailTemplate(user.name, orderSummary)
-        ).then(info => console.log(`ORDER EMAIL SENT: ID ${info.messageId}`))
-         .catch(err => console.error("ORDER EMAIL ERROR:", err.message));
+        ).catch(err => console.error("ORDER EMAIL ERROR:", err.message));
 
         res.status(201).json({ 
             message: "Order placed successfully!", 
@@ -109,11 +110,53 @@ router.post("/place", async (req, res) => {
     }
 });
 
-// Get user orders
+// GET Active Order for Delivery Partner
+router.get("/partner/:partnerId", async (req, res) => {
+    try {
+        const order = await Order.findOne({ 
+            deliveryPartnerId: req.params.partnerId, 
+            status: { $ne: "Delivered" } 
+        })
+        .populate("userId", "name phone location address")
+        .populate("items.farmerId", "name phone location address")
+        .sort({ updatedAt: -1 });
+
+        res.json(order);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Get user orders (history)
 router.get("/user/:userId", async (req, res) => {
     try {
-        const orders = await Order.find({ userId: req.params.userId }).sort({ createdAt: -1 });
+        const orders = await Order.find({ userId: req.params.userId })
+            .populate("deliveryPartnerId", "name phone currentLocation")
+            .sort({ createdAt: -1 });
         res.json(orders);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Submit Review
+router.put("/submit-review/:id", async (req, res) => {
+    try {
+        const { rating, comment } = req.body;
+        const orderId = req.params.id;
+
+        const order = await Order.findById(orderId);
+        if (!order) return res.status(404).json({ message: "Order not found" });
+        if (order.status !== "Delivered") return res.status(400).json({ message: "Can only review delivered orders" });
+
+        order.review = {
+            rating,
+            comment,
+            reviewedAt: new Date()
+        };
+
+        await order.save();
+        res.json({ message: "Review submitted successfully!", order });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

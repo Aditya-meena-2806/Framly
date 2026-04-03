@@ -1,0 +1,70 @@
+/* Overrides for Farmer and Delivery Partner Contact Pages */
+body { 
+    font-family: 'Outfit', sans-serif; 
+    padding-top: 0; 
+}
+
+.back-nav { 
+    padding: 20px 40px; 
+    background: white; 
+    display: flex; 
+    align-items: center; 
+    border-bottom: 2px solid #f8fafc; 
+}
+
+.back-nav a { 
+    text-decoration: none; 
+    color: #64748b; 
+    font-weight: 700; 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    transition: 0.3s; 
+}
+
+.back-nav a:hover { 
+    color: #2e7d32; 
+    transform: translateX(-8px); 
+}
+
+.contact-hero h1 { 
+    font-family: 'Outfit', sans-serif !important; 
+    font-weight: 800; 
+}
+
+.submit-btn { 
+    font-family: 'Outfit', sans-serif !important; 
+}
+
+.form-group input[readonly] {
+    background: #f1f5f9 !important;
+    cursor: not-allowed;
+    border-color: #e2e8f0;
+}
+
+select.form-control-custom {
+    padding: 14px 18px; 
+    border: 2px solid #edf2f7; 
+    border-radius: 12px; 
+    font-family: inherit; 
+    font-size: 1rem; 
+    background: #f8fafc; 
+    cursor: pointer;
+    width: 100%;
+}
+
+.farmer-support-btn {
+    background: linear-gradient(135deg, #1a4d1a 0%, #2e7d32 100%) !important;
+}
+
+.delivery-support-btn {
+    background: linear-gradient(135deg, #0f172a 0%, #2e7d32 100%) !important;
+}
+
+.delivery-info-dark {
+    background: #0f172a !important;
+}
+
+.blue-icon {
+    color: #60a5fa !important;
+}

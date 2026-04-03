@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Partner Login | Farmly</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="delivery-style.css">
+</head>
+
+<body>
+    <div class="login-page-bg"></div>
+    <div class="login-wrapper">
+        <div class="login-card">
+            <div class="header">
+                <div class="logo-icon"><i class="fa-solid fa-truck-fast"></i></div>
+                <h2>Partner <span>Login</span></h2>
+                <p>Welcome back! Let's start delivering freshness.</p>
+            </div>
+
+            <form id="deliveryLoginForm">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" id="email" placeholder="email@farmly.com" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="password" placeholder="••••••••" required>
+                    </div>
+                </div>
+                <button type="submit" class="login-btn">Secure Login <i
+                        class="fa-solid fa-arrow-right-to-bracket"></i></button>
+            </form>
+
+            <div class="links">
+                Need an account? <a href="signup.html">Join the Framly</a><br>
+                <a href="../login.html" class="portal-link">← Choose Different Portal</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("deliveryLoginForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            try {
+                const response = await fetch("http://localhost:5000/api/delivery/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem("partnerId", data.id);
+                    localStorage.setItem("partnerName", data.name);
+                    alert("Welcome back!");
+                    window.location.href = "dashboard.html";
+                } else {
+                    alert(data.message || "Login Failed");
+                }
+            } catch (err) {
+                alert("Server error.");
+            }
+        });
+    </script>
+</body>
+
+</html>

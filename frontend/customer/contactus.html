@@ -21,7 +21,7 @@
 
         <section class="contact-container">
             <div class="contact-info">
-                <h3>Contact Information</h3>
+                <h3>Farmly Operations</h3>
                 <p>Fill out the form and our team will get back to you within 24 hours.</p>
 
                 <div class="info-items">
@@ -81,10 +81,64 @@
     </footer>
     <script src="js/script.js"></script>
     <script>
-        document.getElementById('contactForm').onsubmit = (e) => {
+        // Auto-populate identity tokens if logged in
+        const cName = localStorage.getItem('customerName');
+        const cEmail = localStorage.getItem('customerEmail');
+
+        if (cName && cEmail) {
+            const nameInput = document.getElementById('name');
+            const emailInput = document.getElementById('email');
+            
+            nameInput.value = cName;
+            emailInput.value = cEmail;
+            
+            // Set as verified readonly
+            nameInput.readOnly = true;
+            emailInput.readOnly = true;
+            nameInput.style.background = '#f1f5f9';
+            emailInput.style.background = '#f1f5f9';
+            nameInput.style.cursor = 'not-allowed';
+            emailInput.style.cursor = 'not-allowed';
+            nameInput.title = "Verified Farmly Citizen";
+            emailInput.title = "Verified Contact Email";
+        }
+
+        document.getElementById('contactForm').onsubmit = async (e) => {
             e.preventDefault();
-            alert('Thank you for reaching out! Our team will get back to you shortly.');
-            e.target.reset();
+            const btn = e.target.querySelector('.submit-btn');
+            const originalText = btn.innerHTML;
+            
+            btn.innerHTML = 'Sending... <i class="fa-solid fa-spinner fa-spin"></i>';
+            btn.disabled = true;
+
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                category: document.getElementById('subject').value,
+                message: document.getElementById('message').value,
+                type: 'Customer'
+            };
+
+            try {
+                const res = await fetch('http://localhost:5000/api/support/send', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                if (res.ok) {
+                    alert('Thank you for reaching out! Your message has been relayed to Farmly HQ. Our team will get back to you shortly.');
+                    e.target.reset();
+                } else {
+                    alert('Farmly Support Relay is currently busy. Please try again later.');
+                }
+            } catch (err) {
+                console.error("Relay Error:", err);
+                alert('Connection to HQ lost. Please check your internet.');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
         };
     </script>
 </body>

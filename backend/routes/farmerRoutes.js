@@ -28,14 +28,14 @@ const saveImage = (base64Data) => {
 //  Farmer Registration
 router.post("/register", async (req, res) => {
     try {
-        const { name, email, password, location, phone } = req.body;
+        const { name, email, password, location, phone, address } = req.body;
 
         // Precision Email Validation
         if (!isValidEmail(email)) {
             return res.status(400).json({ message: "Invalid email format. Please provide a real email address." });
         }
 
-        const farmer = new Farmer({ name, email, password, location, phone });
+        const farmer = new Farmer({ name, email, password, location, phone, address });
         await farmer.save();
 
         // Send Registration Email (Backgrounded)
@@ -73,6 +73,7 @@ router.post("/login", async (req, res) => {
             name: farmer.name,
             email: farmer.email,
             phone: farmer.phone || "N/A",
+            address: farmer.address || "N/A",
             location: farmer.location || "N/A"
         });
     } catch (err) {
@@ -91,6 +92,7 @@ router.get("/profile/:id", async (req, res) => {
             name: farmer.name,
             email: farmer.email,
             phone: farmer.phone || "N/A",
+            address: farmer.address || "N/A",
             location: farmer.location || "N/A"
         });
     } catch (err) {
@@ -171,6 +173,20 @@ router.patch("/mark-out-of-stock/:id", async (req, res) => {
         }
 
         res.json({ message: "Product marked as out of stock", product });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Update Farmer Location & Address
+router.put("/profile/update-location/:id", async (req, res) => {
+    try {
+        const { address, location } = req.body;
+        const farmer = await Farmer.findByIdAndUpdate(req.params.id, {
+            address,
+            location
+        }, { new: true });
+        res.json({ message: "Farm location updated successfully", farmer });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

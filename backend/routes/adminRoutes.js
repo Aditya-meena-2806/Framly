@@ -174,15 +174,18 @@ router.delete("/farmer/:id", async (req, res) => {
     }
 });
 
-// Get All Orders (Optionally filtered by User)
+// Get All Orders (Optionally filtered by User or Partner)
 router.get("/orders", async (req, res) => {
     try {
-        const { userId } = req.query;
-        const filter = userId ? { userId } : {};
+        const { userId, partnerId } = req.query;
+        let filter = {};
+        if (userId) filter.userId = userId;
+        if (partnerId) filter.deliveryPartnerId = partnerId;
         
         const Order = require("../models/Order");
         const orders = await Order.find(filter)
             .populate("userId", "name email")
+            .populate("deliveryPartnerId", "name email")
             .sort({ createdAt: -1 });
         res.json(orders);
     } catch (err) {
@@ -200,6 +203,45 @@ router.get("/products", async (req, res) => {
             .populate("farmerId", "name email")
             .sort({ createdAt: -1 });
         res.json(products);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Get All Delivery Partners
+router.get("/delivery-partners", async (req, res) => {
+    try {
+        const DeliveryPartner = require("../models/DeliveryPartner");
+        const partners = await DeliveryPartner.find({}).sort({ createdAt: -1 });
+        res.json(partners);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Toggle Partner Active Status
+router.put("/partner-status/:id", async (req, res) => {
+    try {
+        const DeliveryPartner = require("../models/DeliveryPartner");
+        const partner = await DeliveryPartner.findById(req.params.id);
+        partner.active = !partner.active;
+        await partner.save();
+        res.json({ message: `Partner ${partner.active ? 'Activated' : 'Deactivated'}` });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Get All Customer Reviews
+router.get("/all-reviews", async (req, res) => {
+    try {
+        const Order = require("../models/Order");
+        // Only return orders that have a rating
+        const reviews = await Order.find({ "review.rating": { $exists: true } })
+            .populate("userId", "name email")
+            .populate("items.productId", "name image")
+            .sort({ "review.reviewedAt": -1 });
+        res.json(reviews);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

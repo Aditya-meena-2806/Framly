@@ -179,11 +179,76 @@ const outOfStockEmailTemplate = (name, productName) => `
     </div>
 `;
 
+/**
+ * Email Template for Order Delivered
+ */
+const orderDeliveredEmailTemplate = (name, orderId) => `
+    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
+        <div style="text-align: center; background-color: #2e7d32; padding: 10px; border-radius: 10px 10px 0 0;">
+            <h1 style="color: white; margin: 0;">Order Delivered! 🧺</h1>
+        </div>
+        <div style="padding: 20px; color: #333;">
+            <p>Hi <strong>${name}</strong>,</p>
+            <p>Great news! Your Farmly order <strong>#${orderId.slice(-8).toUpperCase()}</strong> has been successfully delivered.</p>
+            <p>We hope you enjoy your fresh produce! Your support helps local farmers thrive.</p>
+            
+            <div style="background-color: #f0f9ff; padding: 20px; border-radius: 10px; margin: 25px 0; border: 1px solid #bae6fd; text-align: center;">
+                <p style="margin-top: 0; color: #0369a1; font-weight: bold;">How was your experience?</p>
+                <p style="font-size: 0.9rem;">Please take a moment to rate the product quality and delivery service.</p>
+                <div style="margin-top: 20px;">
+                    <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/customer/order-history.html" style="background-color: #0369a1; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">Give Feedback ✨</a>
+                </div>
+            </div>
+
+            <p>Thank you for choosing Farmly!</p>
+            <br>
+            <p>Best Regards,<br>The Farmly Team</p>
+        </div>
+        <div style="text-align: center; padding: 10px; font-size: 12px; color: #777;">
+            &copy; 2026 Farmly. All Rights Reserved.
+        </div>
+    </div>
+`;
+
+/**
+ * Generate a 6-digit OTP
+ */
+const generateOTP = () => {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
+/**
+ * Email Template for OTP Verification
+ */
+const otpEmailTemplate = (otp) => `
+    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
+        <div style="text-align: center; background-color: #2e7d32; padding: 10px; border-radius: 10px 10px 0 0;">
+            <h1 style="color: white; margin: 0;">Verify Your Email</h1>
+        </div>
+        <div style="padding: 20px; color: #333;">
+            <p>Verification Code:</p>
+            <div style="text-align: center; margin: 30px 0;">
+                <span style="background-color: #f4f4f4; color: #2e7d32; padding: 10px 20px; font-size: 24px; font-weight: bold; border-radius: 5px; letter-spacing: 5px;">${otp}</span>
+            </div>
+            <p>Please enter this code on the registration page to complete your signup. This code will expire in 10 minutes.</p>
+            <p>If you did not request this code, please ignore this email.</p>
+            <br>
+            <p>Best Regards,<br>The Farmly Team</p>
+        </div>
+        <div style="text-align: center; padding: 10px; font-size: 12px; color: #777;">
+            &copy; 2026 Farmly. All Rights Reserved.
+        </div>
+    </div>
+`;
+
 module.exports = {
     isValidEmail,
     sendEmail,
+    generateOTP,
+    otpEmailTemplate,
     registrationEmailTemplate,
     orderEmailTemplate,
     farmerApprovalEmailTemplate,
-    outOfStockEmailTemplate
+    outOfStockEmailTemplate,
+    orderDeliveredEmailTemplate
 };

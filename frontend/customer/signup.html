@@ -7,87 +7,273 @@
       <title>Customer Sign Up | Farmly</title>
       <!-- Font link removed -->
       <link rel="stylesheet" href="../css/signup.css">
+      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+      <style>
+            #map { height: 250px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #ddd; }
+            .location-status { font-size: 0.8rem; color: #27ae60; margin-bottom: 10px; display: none; }
+            
+            /* OTP Overlay Styles */
+            .otp-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.8);
+                display: none; /* Hidden by default */
+                justify-content: center;
+                align-items: center;
+                z-index: 10000;
+                backdrop-filter: blur(5px);
+            }
+            .otp-card {
+                background: white;
+                padding: 30px;
+                border-radius: 15px;
+                width: 90%;
+                max-width: 400px;
+                text-align: center;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            }
+            .otp-card h3 { color: #2e7d32; margin-bottom: 15px; }
+            .otp-card p { color: #666; margin-bottom: 20px; font-size: 0.9rem; }
+            .otp-input {
+                width: 100%;
+                padding: 12px;
+                font-size: 24px;
+                text-align: center;
+                letter-spacing: 10px;
+                border: 2px solid #ddd;
+                border-radius: 8px;
+                margin-bottom: 20px;
+                outline: none;
+            }
+            .otp-input:focus { border-color: #2e7d32; }
+            .otp-btn {
+                background: #2e7d32;
+                color: white;
+                border: none;
+                padding: 12px 30px;
+                border-radius: 8px;
+                font-weight: bold;
+                cursor: pointer;
+                width: 100%;
+                transition: background 0.3s;
+            }
+            .otp-btn:hover { background: #1b5e20; }
+            .resend-link {
+                display: block;
+                margin-top: 15px;
+                font-size: 0.8rem;
+                color: #2e7d32;
+                text-decoration: none;
+            }
+            .change-email {
+                margin-top: 10px;
+                font-size: 0.8rem;
+                color: #666;
+                cursor: pointer;
+            }
+      </style>
 </head>
 
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/signup-map.css">
+</head>
 <body>
-      <div class="signup-container">
-            <h2>Create Account</h2>
-            <form id="customerSignupForm">
-                  <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" id="username" placeholder="Choose a username" required>
-                  </div>
-                  <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <input type="email" id="email" placeholder="Enter your email" required>
-                  </div>
-                  <div class="form-group">
-                        <label for="phone">Phone Number</label>
-                        <input type="tel" id="phone" placeholder="Enter your phone number" required>
-                  </div>
-                  <div class="form-group">
-                        <label for="address">Address</label>
-                        <textarea id="address" placeholder="Enter your full address" required rows="3"></textarea>
-                  </div>
-                  <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" placeholder="Create a password" required>
-                  </div>
-                  <div class="form-group">
-                        <label for="confirmPassword">Confirm Password</label>
-                        <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
-                  </div>
-                  <button type="submit">Join Farmly</button>
-            </form>
-            <div class="links">
-                  Already have an account? <a href="login.html">Login here</a>
-                  <a href="../login.html" class="back-link">← Back to Portal</a>
+    <div class="signup-wrapper">
+        <div class="form-section">
+            <div class="header">
+                <h2>Join <span>Farmly</span></h2>
+                <p>Register as a customer to access fresh farm products.</p>
             </div>
-      </div>
+            
+            <form id="customerSignupForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="username" placeholder="Choose a name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" id="phone" placeholder="Enter phone" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Email Address</label>
+                        <input type="email" id="email" placeholder="Enter your @gmail.com address" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Full Delivery Address</label>
+                        <textarea id="address" placeholder="Room/Flat No., Street, Landmark" required rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="password" placeholder="Create password" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <input type="password" id="confirmPassword" placeholder="Confirm password" required>
+                    </div>
+                </div>
 
-      <script>
-            document.getElementById("customerSignupForm").addEventListener("submit", async (e) => {
-                  e.preventDefault();
-                  const username = document.getElementById("username").value;
-                  const email = document.getElementById("email").value;
-                  const phone = document.getElementById("phone").value;
-                  const address = document.getElementById("address").value;
-                  const password = document.getElementById("password").value;
-                  const confirmPassword = document.getElementById("confirmPassword").value;
+                <input type="hidden" id="lat">
+                <input type="hidden" id="lng">
+                
+                <button type="submit">Create Account</button>
+            </form>
+            
+            <div class="links">
+                Already have an account? <a href="login.html">Login</a><br>
+                <a href="../login.html" style="margin-top:10px; display:inline-block; font-size:0.8rem; color:#95a5a6;">← Back to Portal</a>
+            </div>
+        </div>
 
-                  // Email Validation Logic (Strictly @gmail.com)
-                  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                  const emailLower = email.toLowerCase();
-                  
-                  if (!emailRegex.test(email) || !emailLower.endsWith('@gmail.com')) {
-                        alert("Invalid Email ID! Please enter a valid @gmail.com address.");
-                        return;
-                  }
+        <div class="map-section">
+            <div id="map"></div>
+            <div class="map-overlay">
+                <button id="locateBtn" title="Find my location"><i class="fa-solid fa-location-crosshairs"></i> Pin Me</button>
+            </div>
+            <div id="locationStatus" class="status-badge">✅ Delivery Location Set</div>
+        </div>
+    </div>
+    
+    <!-- OTP Verification Overlay -->
+    <div id="otpOverlay" class="otp-overlay">
+        <div class="otp-card">
+            <div class="header">
+                <h3>Email Verification</h3>
+                <p>We've sent a 6-digit OTP to your email address. Please enter it below to complete registration.</p>
+            </div>
+            <input type="text" id="otpInput" class="otp-input" maxlength="6" placeholder="000000">
+            <button id="verifyOtpBtn" class="otp-btn">Verify & Create Account</button>
+            <a href="#" id="resendOtp" class="resend-link">Resend Code</a>
+            <div id="changeEmailBtn" class="change-email">Entered wrong email? Edit</div>
+        </div>
+    </div>
 
-                  if (password !== confirmPassword) {
-                        alert("Passwords do not match!");
-                        return;
-                  }
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const map = L.map('map', { zoomControl: false }).setView([20.5937, 78.9629], 5);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        L.control.zoom({ position: 'bottomright' }).addTo(map);
+        
+        let marker;
+        map.on('click', (e) => {
+            const { lat, lng } = e.latlng;
+            setMarker(lat, lng);
+        });
 
-                  try {
-                        const response = await fetch("http://localhost:5000/api/customer/register", {
-                              method: "POST",
-                              headers: { "Content-Type": "application/json" },
-                              body: JSON.stringify({ username, email, password, phone, address })
-                        });
-                        const data = await response.json();
+        function setMarker(lat, lng) {
+            if (marker) map.removeLayer(marker);
+            marker = L.marker([lat, lng]).addTo(map);
+            document.getElementById("lat").value = lat;
+            document.getElementById("lng").value = lng;
+            document.getElementById("locationStatus").style.display = "block";
+            map.panTo([lat, lng]);
+        }
 
-                        if (response.ok) {
-                              alert("Registration Successful!");
-                              window.location.href = "login.html";
-                        } else {
-                              alert(data.message || "Registration Failed");
-                        }
-                  } catch (err) {
-                        alert("Server Error. Ensure Backend is running.");
-                  }
-            });
-      </script>
+        document.getElementById("locateBtn").onclick = (e) => {
+            e.preventDefault();
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((pos) => {
+                    const { latitude, longitude } = pos.coords;
+                    map.setView([latitude, longitude], 15);
+                    setMarker(latitude, longitude);
+                });
+            }
+        };
+
+        document.getElementById("customerSignupForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const lat = document.getElementById("lat").value;
+            const lng = document.getElementById("lng").value;
+            if(!lat) return alert("Please pin your exact delivery location on the map!");
+
+            const username = document.getElementById("username").value;
+            const email = document.getElementById("email").value;
+            const phone = document.getElementById("phone").value;
+            const address = document.getElementById("address").value;
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+
+            if (password !== confirmPassword) return alert("Passwords do not match!");
+
+            // Prepare User Data
+            const userData = { username, email, password, phone, address, location: { lat: parseFloat(lat), lng: parseFloat(lng) } };
+
+            try {
+                // Step 1: Request OTP
+                document.querySelector("button[type='submit']").innerText = "Sending Code...";
+                document.querySelector("button[type='submit']").disabled = true;
+
+                const response = await fetch("http://localhost:5000/api/otp/send", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ role: 'customer', email, userData })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById("otpOverlay").style.display = "flex";
+                } else {
+                    alert(data.message || "Failed to send OTP");
+                }
+            } catch (err) { 
+                alert("Server error sending OTP."); 
+                console.error(err);
+            } finally {
+                document.querySelector("button[type='submit']").innerText = "Create Account";
+                document.querySelector("button[type='submit']").disabled = false;
+            }
+        });
+
+        // Step 2: Verify OTP
+        document.getElementById("verifyOtpBtn").onclick = async () => {
+            const otp = document.getElementById("otpInput").value;
+            const email = document.getElementById("email").value;
+
+            if (otp.length !== 6) return alert("Enter 6-digit OTP");
+
+            try {
+                const btn = document.getElementById("verifyOtpBtn");
+                btn.innerText = "Verifying...";
+                btn.disabled = true;
+
+                const response = await fetch("http://localhost:5000/api/otp/verify", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, otp, role: 'customer' })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    alert("Account Verified & Created!");
+                    window.location.href = "login.html";
+                } else {
+                    alert(data.message || "Invalid OTP");
+                }
+            } catch (err) {
+                alert("Verification failed.");
+            } finally {
+                document.getElementById("verifyOtpBtn").innerText = "Verify & Create Account";
+                document.getElementById("verifyOtpBtn").disabled = false;
+            }
+        };
+
+        // Close/Resend logic
+        document.getElementById("changeEmailBtn").onclick = () => {
+            document.getElementById("otpOverlay").style.display = "none";
+        };
+        
+        document.getElementById("resendOtp").onclick = (e) => {
+            e.preventDefault();
+            document.getElementById("customerSignupForm").dispatchEvent(new Event('submit'));
+        };
+    </script>
+</body>
+</html>
 </body>
 
 </html>

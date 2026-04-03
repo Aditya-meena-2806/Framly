@@ -1,21 +1,31 @@
-
-
 // Inject global cart elements if missing
 (function() {
     // ---- Global Navbar Injection ----
     const navbarPlaceholder = document.getElementById('navbar-placeholder');
     if (navbarPlaceholder) {
+        // Detect path depth to adjust relative links
+        let prefix = "";
+        let contactPage = "contactus.html"; // Default for customer
+        const path = window.location.pathname;
+        if (path.includes('/farmer/') || path.includes('/delivery/')) {
+            prefix = "../customer/";
+            contactPage = "contact-us.html"; // Local for all partners (farmer & delivery)
+        } else if (!path.includes('/customer/') && (path.endsWith('.html') || path.endsWith('/'))) {
+            // Root files (like login.html in frontend/)
+            prefix = "customer/";
+        }
+
         navbarPlaceholder.innerHTML = `
         <nav class="navbar">
             <div class="logo">
-                <a href="index.html"><span>Farmly</span></a>
+                <a href="${prefix}index.html"><span>Farmly</span></a>
             </div>
             <ul class="nav-items">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="services.html">Services</a></li>
-                <li><a href="all-products.html">Products</a></li>
-                <li><a href="contactus.html">Contact</a></li>
+                <li><a href="${prefix}index.html">Home</a></li>
+                <li><a href="${prefix}about.html">About</a></li>
+                <li><a href="${prefix}services.html">Services</a></li>
+                <li><a href="${prefix}all-products.html">Products</a></li>
+                <li><a href="${(path.includes('/delivery/')) ? contactPage : prefix + contactPage}">Contact</a></li>
             </ul>
             <div class="search-box">
                 <div class="search-icon"><span class="fa-solid fa-magnifying-glass"></span></div>
@@ -26,7 +36,7 @@
                 <div id="customer-center"><span class="fa-solid fa-phone"></span></div>
                 <div id="icon-shopping-cart"><span class="fa-solid fa-cart-shopping"></span><span id="item-counter">0</span></div>
                 <div class="profile-container" id="profile-container">
-                    <div id="login-or-signup"><a href="login.html"><span class="fa-solid fa-user"></span></a></div>
+                    <div id="login-or-signup"><a href="${prefix}login.html"><span class="fa-solid fa-user"></span></a></div>
                     <div class="profile-dropdown" id="profile-dropdown">
                         <div class="user-info">
                             <p><strong>Username:</strong> <span id="user-name">Welcome!</span></p>
@@ -36,10 +46,11 @@
                         </div>
                         <hr>
                         <ul class="profile-links">
-                            <li><a href="order-history.html"><i class="fa-solid fa-clock-rotate-left"></i> Order History</a></li>
-                            <li><a href="cart.html"><i class="fa-solid fa-heart"></i> Wishlist</a></li>
+                            <li><a href="${prefix}update-location.html"><i class="fa-solid fa-map-location-dot"></i> Update Location</a></li>
+                            <li><a href="${prefix}order-history.html"><i class="fa-solid fa-clock-rotate-left"></i> Order History</a></li>
+                            <li><a href="${prefix}cart.html"><i class="fa-solid fa-heart"></i> Wishlist</a></li>
                             <li><a href="#"><i class="fa-solid fa-gift"></i> Gift Cards</a></li>
-                            <li><a href="contactus.html"><i class="fa-solid fa-headset"></i> Contact Us</a></li>
+                            <li><a href="${(path.includes('/delivery/')) ? contactPage : prefix + contactPage}"><i class="fa-solid fa-headset"></i> Contact Us</a></li>
                         </ul>
                         <hr>
                         <div class="logout-btn-container">
@@ -62,7 +73,8 @@
             const navLinks = injectedNav.querySelectorAll('.nav-items a');
             const currentPath = window.location.pathname.split('/').pop() || 'index.html';
             navLinks.forEach(link => {
-                if (link.getAttribute('href') === currentPath) {
+                const href = link.getAttribute('href');
+                if (href.endsWith(currentPath)) {
                     link.style.color = 'orangered';
                 }
             });
@@ -402,6 +414,7 @@ function saveCartToStorage() {
         const stockTextRaw = item.querySelector('.cart-details p:nth-child(9) span').textContent;
         const stock = parseFloat(stockTextRaw) || 0;
         const id = item.getAttribute('data-id');
+        const actualFarmerId = item.getAttribute('data-farmer-id');
         
         // Find if it's already in "Buy" list
         let buyData = null;
@@ -410,12 +423,13 @@ function saveCartToStorage() {
             if (b.querySelector('.product-name p').textContent === name) {
                 buyData = {
                     id: b.getAttribute('data-id'),
-                    quantity: parseFloat(b.getAttribute('data-quantity'))
+                    quantity: parseFloat(b.getAttribute('data-quantity')),
+                    farmerId: b.getAttribute('data-farmer-id')
                 };
             }
         }
 
-        cartData.push({ name, price, unit, image, addedTime, discount, buyData, id, farmerName, stock });
+        cartData.push({ name, price, unit, image, addedTime, discount, buyData, id, farmerName, stock, actualFarmerId });
     }
     localStorage.setItem('farmly_cart', JSON.stringify(cartData));
 }
@@ -557,7 +571,7 @@ function displayBuyingHeader(countValue) {
 })();
 
 // create elements for selected product content
-function createSelectedProductsContent(image, name, price, unit, discount, preservative, time, id, farmerName, stock) {
+function createSelectedProductsContent(image, name, price, unit, discount, preservative, time, id, farmerName, stock, actualFarmerId) {
     const safeUnit = (unit && unit !== 'undefined') ? unit : 'kg';
     const safeFarmer = (farmerName && farmerName !== 'undefined' && farmerName !== 'Unknown') ? farmerName : 'Unknown Farmer';
     const safeStock = stock || 0;
@@ -565,6 +579,7 @@ function createSelectedProductsContent(image, name, price, unit, discount, prese
     let newCartContent = document.createElement('div');
     newCartContent.setAttribute('class', 'cart-content');
     if (id) newCartContent.setAttribute('data-id', id);
+    if (actualFarmerId) newCartContent.setAttribute('data-farmer-id', actualFarmerId);
 
     let newCartImageArea = document.createElement('div');
     newCartImageArea.setAttribute('class', 'cart-image-area');
@@ -804,10 +819,11 @@ function displayCartCounter(countValue) {
 }
 
 // create shopping cart item
-function createShoppingCartItem(itemName, itemPrice, itemUnit, itemDiscount, presentPrice, itemQuantity, itemId) {
+function createShoppingCartItem(itemName, itemPrice, itemUnit, itemDiscount, presentPrice, itemQuantity, itemId, farmerId) {
     let newParentDiv = document.createElement('div');
     newParentDiv.setAttribute('class', 'shopping-details');
     newParentDiv.setAttribute('data-id', itemId);
+    if (farmerId) newParentDiv.setAttribute('data-farmer-id', farmerId);
 
     let newChildDiv = [];
 
@@ -1226,7 +1242,7 @@ if (removeAllShopItems) {
 // ===================================
 
 // Bridge for dynamic products
-window.addToCart = function(btnWrap, name, price, unit, image, id, farmerName, stock) {
+window.addToCart = function(btnWrap, name, price, unit, image, id, farmerName, stock, actualFarmerId) {
     const btn = btnWrap.querySelector('p');
     const isAdded = btnWrap.getAttribute('data-added') === 'true';
 
@@ -1236,7 +1252,7 @@ window.addToCart = function(btnWrap, name, price, unit, image, id, farmerName, s
         btn.innerHTML = '<span class="fa-solid fa-cart-arrow-down"></span> Added';
         
         const addedTime = getAddedTime();
-        const newContent = createSelectedProductsContent(image, name, price, unit, 0, 'No', addedTime, id, farmerName, stock);
+        const newContent = createSelectedProductsContent(image, name, price, unit, 0, 'No', addedTime, id, farmerName, stock, actualFarmerId);
         
         const removeBtn = newContent.querySelector('.remove-item-btn');
         removeBtn.onclick = () => {
@@ -1271,7 +1287,7 @@ window.addToCart = function(btnWrap, name, price, unit, image, id, farmerName, s
                 
                 const presentPrice = (price - (0 * price)).toFixed(2);
                 
-                shoppingCartItemLocal = createShoppingCartItem(name, price, unit, 0, presentPrice, q, id);
+                shoppingCartItemLocal = createShoppingCartItem(name, price, unit, 0, presentPrice, q, id, actualFarmerId);
                 shoppingDetailsContent.appendChild(shoppingCartItemLocal);
                 
                 if (unit === 'kg') countTotalWeight += q;
@@ -1350,13 +1366,14 @@ if (confirmOrderBtn) {
         let missingIds = false;
         shoppingDetailsItems.forEach(itemDiv => {
             const id = itemDiv.getAttribute('data-id');
+            const farmerId = itemDiv.getAttribute('data-farmer-id');
             if (!id || id === 'null' || id === 'undefined') missingIds = true;
             const name = itemDiv.children[1].children[0].innerText;
             const priceText = itemDiv.getAttribute('data-price');
             const price = parseFloat(priceText);
             const quantity = parseFloat(itemDiv.getAttribute('data-quantity'));
 
-            items.push({ productId: id, name, price, quantity });
+            items.push({ productId: id, farmerId, name, price, quantity });
         });
 
         if (missingIds) {
@@ -1730,7 +1747,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Use window.addToCart if it's a dynamic product?
             // Actually, better to just reconstruct it manually or find the button.
             // But since many products are loaded via API, we just reconstruct the cart UI.
-            const newContent = createSelectedProductsContent(data.image, data.name, data.price, data.unit, data.discount, 'No', data.addedTime, data.id, data.farmerName, data.stock);
+            const newContent = createSelectedProductsContent(data.image, data.name, data.price, data.unit, data.discount, 'No', data.addedTime, data.id, data.farmerName, data.stock, data.actualFarmerId);
             
             // Setup removeBtn
             const removeBtn = newContent.querySelector('.remove-item-btn');
@@ -1770,7 +1787,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     itemQuantity.setAttribute('disabled', 'true');
                     
                     const presentPrice = (data.price - ((data.discount/100) * data.price)).toFixed(2);
-                    shoppingCartItemLocal = createShoppingCartItem(data.name, data.price, data.unit, data.discount, presentPrice, q, data.buyData ? (data.buyData.id || data.id) : data.id);
+                    shoppingCartItemLocal = createShoppingCartItem(data.name, data.price, data.unit, data.discount, presentPrice, q, data.buyData ? (data.buyData.id || data.id) : data.id, data.actualFarmerId || (data.buyData ? data.buyData.farmerId : null));
                     shoppingDetailsContent.appendChild(shoppingCartItemLocal);
                     
                     if (data.unit === 'kg') countTotalWeight += q;

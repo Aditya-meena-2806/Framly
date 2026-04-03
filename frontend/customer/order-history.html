@@ -8,228 +8,20 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="responsive.css">
     <link rel="stylesheet" href="icon.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <title>Order History - Farmly</title>
-    <style>
-        .order-history-container {
-            max-width: 1000px;
-            margin: 120px auto 50px;
-            padding: 20px;
-            min-height: 60vh;
-        }
-
-        .page-title {
-            font-size: 2.5rem;
-            color: #2e7d32;
-            margin-bottom: 30px;
-            text-align: center;
-            font-weight: 700;
-        }
-
-        .order-card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            margin-bottom: 25px;
-            overflow: hidden;
-            transition: transform 0.3s ease;
-            border: 1px solid #eee;
-        }
-
-        .order-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .order-header {
-            background: #f8f9fa;
-            padding: 15px 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #eee;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .order-info span {
-            color: #666;
-            font-size: 0.9rem;
-            margin-right: 20px;
-        }
-
-        .order-info strong {
-            color: #333;
-        }
-
-        .order-status {
-            padding: 6px 15px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .status-pending { background: #fff3cd; color: #856404; }
-        .status-shipped { background: #cce5ff; color: #004085; }
-        .status-delivered { background: #d4edda; color: #155724; }
-        .status-cancelled { background: #f8d7da; color: #721c24; }
-
-        .order-body {
-            padding: 20px 25px;
-        }
-
-        .order-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .order-item:last-child {
-            border-bottom: none;
-        }
-
-        .item-details h4 {
-            margin: 0;
-            color: #333;
-            font-size: 1.1rem;
-        }
-
-        .item-details p {
-            margin: 5px 0 0;
-            color: #777;
-            font-size: 0.9rem;
-        }
-
-        .item-price {
-            font-weight: 700;
-            color: #2e7d32;
-        }
-
-        .order-footer {
-            padding: 15px 25px;
-            background: #fff;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px dotted #eee;
-        }
-
-        .total-price {
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: #333;
-        }
-
-        .total-price span {
-            color: #2e7d32;
-        }
-
-        .track-btn {
-            background: #2e7d32;
-            color: white;
-            padding: 8px 20px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 600;
-            transition: background 0.3s;
-        }
-
-        .track-btn:hover {
-            background: #1b5e20;
-        }
-
-        .empty-history {
-            text-align: center;
-            padding: 50px;
-            color: #888;
-        }
-
-        .empty-history i {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            color: #ddd;
-        }
-
-        /* Tracking Timeline modal simulation */
-        .tracking-timeline {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-            position: relative;
-        }
-
-        .tracking-timeline::before {
-            content: '';
-            position: absolute;
-            top: 25px;
-            left: 5%;
-            right: 5%;
-            height: 2px;
-            background: #ddd;
-            z-index: 1;
-        }
-
-        .step {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            z-index: 2;
-            width: 20%;
-            text-align: center;
-        }
-
-        .step-icon {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #ddd;
-            margin-bottom: 8px;
-            border: 3px solid white;
-        }
-
-        .step.active .step-icon {
-            background: #2e7d32;
-            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.2);
-        }
-
-        .step.completed .step-icon {
-            background: #2e7d32;
-        }
-
-        .step p {
-            font-size: 0.75rem;
-            margin: 0;
-            font-weight: 600;
-            color: #999;
-        }
-
-        .step.active p, .step.completed p {
-            color: #2e7d32;
-        }
-
-        @media (max-width: 600px) {
-            .order-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .tracking-timeline {
-                display: none;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="order-history.css">
 </head>
 
 <body>
     <div id="navbar-placeholder"></div>
 
     <div class="order-history-container">
+        <a href="index.html" class="back-link">
+            Back to Store <i class="fa-solid fa-arrow-right-long"></i>
+        </a>
         <h1 class="page-title">My Order History</h1>
         <div id="orders-list">
             <div class="empty-history">
@@ -239,26 +31,95 @@
         </div>
     </div>
 
-    <!-- footer section -->
+    <div id="trackingModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeTracking()">&times;</span>
+            <h3 id="trackTitle">🚚 Order Tracking</h3>
+            <div id="trackingMap"></div>
+            <div id="trackInfo" style="margin-top: 15px; font-size: 0.9rem; color: #555;"></div>
+        </div>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div id="reviewModal">
+        <div class="review-box">
+            <h3>🌟 Rate Your Order</h3>
+            <p id="reviewOrderTitle">Product Quality & Delivery</p>
+            <div class="stars" id="starContainer">
+                <i class="fa-solid fa-star" data-val="1"></i>
+                <i class="fa-solid fa-star" data-val="2"></i>
+                <i class="fa-solid fa-star" data-val="3"></i>
+                <i class="fa-solid fa-star" data-val="4"></i>
+                <i class="fa-solid fa-star" data-val="5"></i>
+            </div>
+            <textarea id="reviewComment" placeholder="Write your feedback here..."></textarea>
+            <button class="submit-review-btn" onclick="submitReviewAction()">Submit Review</button>
+            <p style="margin-top:15px; cursor:pointer; color:#777;" onclick="closeReview()">Maybe Later</p>
+        </div>
+    </div>
+
+    <!-- footer... -->
     <div id="footer">
         <footer>
             <p>&copy; 2025 Farmly All rights reserved</p>
         </footer>
     </div>
 
-    <script src="js/script.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
+        let trackMap, partnerPin, dropPin, trackInterval;
+
+        async function trackOrder(orderId, partnerId, lat, lng) {
+            document.getElementById("trackingModal").style.display = "block";
+            document.getElementById("trackTitle").innerText = "🚚 Live Tracking: #" + orderId.slice(-6).toUpperCase();
+            
+            if (!trackMap) {
+                trackMap = L.map('trackingMap').setView([lat, lng], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(trackMap);
+            }
+            
+            if (dropPin) trackMap.removeLayer(dropPin);
+            dropPin = L.marker([lat, lng]).addTo(trackMap).bindPopup("Your Home").openPopup();
+            
+            async function updatePartner() {
+                try {
+                    const res = await fetch(`http://localhost:5000/api/order/user/${localStorage.getItem('customerId')}`);
+                    const orders = await res.json();
+                    const order = orders.find(o => o._id === orderId);
+                    
+                    if (order && order.deliveryPartnerId) {
+                        const { currentLocation, name, phone } = order.deliveryPartnerId;
+                        if (partnerPin) trackMap.removeLayer(partnerPin);
+                        
+                        partnerPin = L.marker([currentLocation.lat, currentLocation.lng], {
+                            icon: L.icon({ iconUrl: 'https://cdn-icons-png.flaticon.com/512/71/71200.png', iconSize: [30, 30] })
+                        }).addTo(trackMap).bindPopup(`${name} is on the way!`).openPopup();
+                        
+                        document.getElementById("trackInfo").innerHTML = `
+                            <b>Delivery Partner:</b> ${name} (${phone})<br>
+                            <b>Status:</b> <span style="color:#27ae60; font-weight:bold;">${order.status}</span>
+                        `;
+                        
+                        trackMap.panTo([currentLocation.lat, currentLocation.lng]);
+                    }
+                } catch (err) { console.error(err); }
+            }
+
+            updatePartner();
+            trackInterval = setInterval(updatePartner, 10000); // Update every 10s
+        }
+
+        function closeTracking() {
+            document.getElementById("trackingModal").style.display = "none";
+            clearInterval(trackInterval);
+        }
+
         document.addEventListener('DOMContentLoaded', async () => {
             const userId = localStorage.getItem('customerId');
             const ordersList = document.getElementById('orders-list');
 
             if (!userId) {
-                ordersList.innerHTML = `
-                    <div class="empty-history">
-                        <i class="fa-solid fa-user-slash"></i>
-                        <p>Please <a href="login.html">Login</a> to view your order history.</p>
-                    </div>
-                `;
+                ordersList.innerHTML = `<div class="empty-history"><p>Please Login.</p></div>`;
                 return;
             }
 
@@ -267,85 +128,119 @@
                 const orders = await response.json();
 
                 if (orders.length === 0) {
-                    ordersList.innerHTML = `
-                        <div class="empty-history">
-                            <i class="fa-solid fa-calendar-xmark"></i>
-                            <p>You haven't placed any orders yet.</p>
-                        </div>
-                    `;
+                    ordersList.innerHTML = `<div class="empty-history"><p>No orders yet.</p></div>`;
                     return;
                 }
 
-                ordersList.innerHTML = ''; // Clear loading state
+                ordersList.innerHTML = ''; 
 
                 orders.forEach(order => {
-                    const statusClass = `status-${order.status.toLowerCase()}`;
-                    const date = new Date(order.createdAt).toLocaleDateString(undefined, {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    });
+                    const date = new Date(order.createdAt).toLocaleDateString();
+                    const itemsHtml = order.items.map(item => `<div class="order-item"><span>${item.name} (${item.quantity})</span><span>₹${item.price * item.quantity}</span></div>`).join('');
 
-                    const itemsHtml = order.items.map(item => `
-                        <div class="order-item">
-                            <div class="item-details">
-                                <h4>${item.name}</h4>
-                                <p>Quantity: ${item.quantity}</p>
-                            </div>
-                            <div class="item-price">₹${item.price * item.quantity}</div>
+                    const stages = ['Pending', 'Accepted', 'Picked Up', 'Shipped', 'Delivered'];
+                    const currentIdx = stages.indexOf(order.status);
+                    
+                    const trackingHtml = order.status !== 'Cancelled' ? `
+                        <div class="tracking-timeline">
+                            ${stages.map((s, i) => `
+                                <div class="step ${i <= currentIdx ? 'completed' : ''} ${i === currentIdx ? 'active' : ''}">
+                                    <div class="step-icon"></div><p>${s}</p>
+                                </div>`).join('')}
                         </div>
-                    `).join('');
+                    ` : '';
 
-                    // Live Tracking logic (Simplified)
-                    let trackingHtml = '';
-                    if (order.status !== 'Cancelled') {
-                        const steps = ['Pending', 'Shipped', 'Out for Delivery', 'Delivered'];
-                        const currentIdx = steps.indexOf(order.status);
-                        
-                        trackingHtml = `
-                            <div class="tracking-timeline">
-                                ${steps.map((step, idx) => `
-                                    <div class="step ${idx <= currentIdx ? 'completed' : ''} ${idx === currentIdx ? 'active' : ''}">
-                                        <div class="step-icon"></div>
-                                        <p>${step}</p>
-                                    </div>
-                                `).join('')}
+                    let reviewSection = "";
+                    if (order.review && order.review.rating) {
+                        reviewSection = `
+                            <div style="background:#f0f9ff; padding:10px; border-radius:10px; margin-top:10px; border:1px solid #bae6fd;">
+                                <div style="color:#0369a1; font-weight:700; font-size:0.8rem;">YOUR FEEDBACK</div>
+                                <div style="color:#eab308;">${'★'.repeat(order.review.rating)}${'☆'.repeat(5 - order.review.rating)}</div>
+                                <div style="color:#334155; font-style:italic; font-size:0.85rem;">"${order.review.comment}"</div>
                             </div>
                         `;
+                    }
+
+                    const hasLocation = order.location && order.location.lat && order.location.lng;
+
+                    let actionBtn = "";
+                    if (order.status === 'Delivered') {
+                        if (order.review && order.review.rating) {
+                            actionBtn = `<button class="track-btn" style="background:#0369a1;"><i class="fa-solid fa-circle-check"></i> Reviewed</button>`;
+                        } else {
+                            actionBtn = `<button class="track-btn" style="background:orangered;" onclick="openReviewModal('${order._id}')">Give Feedback <i class="fa-solid fa-star"></i></button>`;
+                        }
+                    } else if (order.deliveryPartnerId && hasLocation && order.status !== 'Cancelled') {
+                        actionBtn = `<button class="track-btn" onclick="trackOrder('${order._id}', '${order.deliveryPartnerId._id}', ${order.location.lat}, ${order.location.lng})">Track Live <i class="fa-solid fa-location-crosshairs"></i></button>`;
+                    } else {
+                        actionBtn = `<a href="contactus.html" class="track-btn" style="background:#888;">Order Details</a>`;
                     }
 
                     const orderCard = document.createElement('div');
                     orderCard.className = 'order-card';
                     orderCard.innerHTML = `
                         <div class="order-header">
-                            <div class="order-info">
-                                <span>Order ID: <strong>#${order._id.substring(order._id.length - 8)}</strong></span>
-                                <span>Placed on: <strong>${date}</strong></span>
-                            </div>
-                            <div class="order-status ${statusClass}">${order.status}</div>
+                            <div>Order <b>#${order._id.slice(-8)}</b> | ${date}</div>
+                            <div class="order-status status-${order.status.toLowerCase()}">${order.status}</div>
                         </div>
-                        <div class="order-body">
-                            ${itemsHtml}
-                            ${trackingHtml}
-                        </div>
+                        <div class="order-body">${itemsHtml}${trackingHtml}${reviewSection}</div>
                         <div class="order-footer">
-                            <div class="total-price">Total Amount: <span>₹${order.totalAmount}</span></div>
-                            <a href="contactus.html" class="track-btn">Need Help?</a>
+                            <div class="total-price">Total: <span>₹${order.totalAmount}</span></div>
+                            ${actionBtn}
                         </div>
                     `;
                     ordersList.appendChild(orderCard);
                 });
 
-            } catch (err) {
-                console.error(err);
-                ordersList.innerHTML = `
-                    <div class="empty-history">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                        <p>Error loading orders. Please try again later.</p>
-                    </div>
-                `;
-            }
+            } catch (err) { console.error(err); }
         });
+        let activeReviewOrderId = null;
+        let selectedRating = 0;
+
+        function openReviewModal(orderId) {
+            activeReviewOrderId = orderId;
+            selectedRating = 0;
+            document.querySelectorAll('#starContainer i').forEach(s => s.classList.remove('active'));
+            document.getElementById("reviewComment").value = "";
+            document.getElementById("reviewModal").style.display = "block";
+        }
+
+        function closeReview() {
+            document.getElementById("reviewModal").style.display = "none";
+        }
+
+        document.querySelectorAll('#starContainer i').forEach(star => {
+            star.onclick = function() {
+                selectedRating = parseInt(this.getAttribute('data-val'));
+                document.querySelectorAll('#starContainer i').forEach((s, idx) => {
+                    if (idx < selectedRating) s.classList.add('active');
+                    else s.classList.remove('active');
+                });
+            };
+        });
+
+        async function submitReviewAction() {
+            if (selectedRating === 0) {
+                alert("Please select a star rating.");
+                return;
+            }
+            const comment = document.getElementById("reviewComment").value;
+
+            try {
+                const res = await fetch(`http://localhost:5000/api/order/submit-review/${activeReviewOrderId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ rating: selectedRating, comment })
+                });
+
+                if (res.ok) {
+                    alert("Thank you for your feedback!");
+                    location.reload();
+                } else {
+                    alert("Error submitting review. Please try again.");
+                }
+            } catch (err) { console.error(err); }
+        }
     </script>
 </body>
 

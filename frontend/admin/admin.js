@@ -185,8 +185,51 @@ async function toggleBlockUser(id) {
     } catch (err) { console.error(err); }
 }
 
+// Load Partners
+async function loadPartners() {
+    try {
+        const response = await fetch(`${API_URL}/delivery-partners`);
+        const partners = await response.json();
+        const list = document.getElementById("partnerList");
+        list.innerHTML = "";
+
+        partners.forEach(p => {
+            const statusStyle = p.active ? "color:#27ae60; background:#e8f8f0;" : "color:#e74c3c; background:#fff0f0;";
+            const statusText = p.active ? "Active" : "Inactive";
+            const btnText = p.active ? "Deactivate" : "Activate";
+
+            list.innerHTML += `
+                <tr>
+                    <td style="font-weight:600;">${p.name}</td>
+                    <td>${p.email}</td>
+                    <td><span class="status-badge" style="background:#f8f9fa;">${p.vehicleType || 'Bike'}</span></td>
+                    <td><span class="status-badge" style="${statusStyle}">${statusText}</span></td>
+                    <td>
+                        <button class="action-btn" style="background:#fff; color:#666; border:1px solid #ddd;" onclick="togglePartnerStatus('${p._id}')"><i class="fa-solid fa-power-off"></i> ${btnText}</button>
+                    </td>
+                    <td>
+                        <button class="action-btn" style="background:#fff; color:#9b59b6; border:1px solid #9b59b6;" onclick="viewPartnerHistory('${p._id}')"><i class="fa-solid fa-truck-ramp-box"></i> Deliveries</button>
+                    </td>
+                </tr>
+            `;
+        });
+    } catch (err) { console.error(err); }
+}
+
+async function togglePartnerStatus(id) {
+    try {
+        const res = await fetch(`${API_URL}/partner-status/${id}`, { method: "PUT" });
+        if(res.ok) loadPartners();
+    } catch (err) { console.error(err); }
+}
+
+function viewPartnerHistory(id) {
+    window.location.href = `admin-orders.html?partnerId=${id}`;
+}
+
 // Initial Load
 updateAdminUI();
 loadPendingProducts();
 loadFarmers();
 loadCustomers();
+loadPartners();

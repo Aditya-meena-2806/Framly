@@ -8,13 +8,18 @@ const Farmer = require('./models/Farmer');
 const Admin = require('./models/Admin');
 const Product = require('./models/Product');
 
+const dns = require('dns');
+
 // Load environment variables
 dotenv.config({ path: path.join(__dirname, '.env') });
 
 const seedDatabase = async () => {
     try {
-        await mongoose.connect(process.env.MONGO_URI);
-        console.log("Connected to MongoDB for seeding...");
+        // Fix for DNS SRV resolution and IPv6 issues
+        dns.setServers(['8.8.8.8', '8.8.4.4']);
+        await mongoose.connect(process.env.MONGO_URI, { family: 4 });
+        
+        console.log("Connected to MongoDB Atlas for seeding...");
 
         // Clear existing data (optional - be careful)
         await User.deleteMany({});

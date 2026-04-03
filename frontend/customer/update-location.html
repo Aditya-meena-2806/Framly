@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Delivery Location | Farmly</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="../css/signup-map.css">
+    <link rel="stylesheet" href="update-location.css">
+</head>
+<body>
+    <div class="update-container">
+        <div class="update-card">
+            <div class="map-section">
+                <h2 style="margin-top:0;">Pin Your <span>Home</span></h2>
+                <p style="color:#64748b; margin-bottom:20px;">Update your delivery point for faster fulfillment.</p>
+                <div id="map"></div>
+                <button type="button" class="btn-location" onclick="useCurrentLocation()">
+                    <i class="fa-solid fa-location-arrow"></i> Use Current Location
+                </button>
+                <div id="locationStatus" style="margin-top:15px; color:#27ae60; font-weight:700; display:none;">🚚 Location Point Captured!</div>
+            </div>
+
+            <div class="form-section">
+                <h3>Delivery <span>Address</span></h3>
+                <form id="updateLocationForm">
+                    <div class="input-group">
+                        <label>Physical Address</label>
+                        <textarea id="address" rows="4" placeholder="Street, Village, Landmark..." required></textarea>
+                    </div>
+                    <input type="hidden" id="lat">
+                    <input type="hidden" id="lng">
+                    
+                    <button type="submit" class="btn-primary">Save New Location</button>
+                    <a href="index.html" style="display:block; text-align:center; margin-top:15px; color:#94a3b8; text-decoration:none; font-weight:600;">← Cancel and Return</a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const customerId = localStorage.getItem("customerId");
+        if(!customerId) window.location.href = "login.html";
+
+        const map = L.map('map', { zoomControl: false }).setView([20.5937, 78.9629], 5);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+        let marker;
+        map.on('click', (e) => setMarker(e.latlng.lat, e.latlng.lng));
+
+        function setMarker(lat, lng) {
+            if (marker) map.removeLayer(marker);
+            marker = L.marker([lat, lng]).addTo(map);
+            document.getElementById("lat").value = lat;
+            document.getElementById("lng").value = lng;
+            document.getElementById("locationStatus").style.display = "block";
+        }
+
+        function useCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((pos) => {
+                    const { latitude, longitude } = pos.coords;
+                    map.setView([latitude, longitude], 15);
+                    setMarker(latitude, longitude);
+                }, (err) => alert("Could not fetch location. Please check your browser permissions."), {
+                    enableHighAccuracy: true
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        async function loadCurrentLocation() {
+            try {
+                const res = await fetch(`http://localhost:5000/api/customer/profile/${customerId}`);
+                const data = await res.json();
+                if(data.address && data.address !== 'N/A') document.getElementById("address").value = data.address;
+                if(data.location && typeof data.location === 'object' && data.location.lat) {
+                    map.setView([data.location.lat, data.location.lng], 15);
+                    setMarker(data.location.lat, data.location.lng);
+                }
+            } catch (err) { }
+        }
+
+        document.getElementById("updateLocationForm").onsubmit = async (e) => {
+            e.preventDefault();
+            const address = document.getElementById("address").value;
+            const lat = document.getElementById("lat").value;
+            const lng = document.getElementById("lng").value;
+
+            if(!lat) return alert("Please pin your location on the map!");
+
+            try {
+                const res = await fetch(`http://localhost:5000/api/customer/profile/update-location/${customerId}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ address, location: { lat: parseFloat(lat), lng: parseFloat(lng) } })
+                });
+                if(res.ok) {
+                    alert("Delivery location updated successfully!");
+                    window.location.href = "index.html";
+                }
+            } catch (err) { alert("Server error"); }
+        };
+
+        loadCurrentLocation();
+    </script>
+</body>
+</html>

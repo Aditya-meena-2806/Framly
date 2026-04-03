@@ -212,41 +212,37 @@ async function markAsRead(id) {
 }
 
 // --- Profile Sync Logic ---
-const farmerId = localStorage.getItem("farmerId");
-const farmerNameElement = document.getElementById("farmer-name");
-const farmerEmailElement = document.getElementById("farmer-email");
-const farmerPhoneElement = document.getElementById("farmer-phone");
-const farmerLocationElement = document.getElementById("farmer-location");
-const authButtonContainer = document.getElementById("authButton");
+const farmerNameElement = document.getElementById("nav-farmer-name");
+const ddName = document.getElementById("card-farmer-name");
+const ddEmail = document.getElementById("card-farmer-email");
+const ddPhone = document.getElementById("card-farmer-phone");
+const ddLocation = document.getElementById("card-farmer-location");
 
 function getCleanValue(val) {
+    if (val && typeof val === 'object') {
+        if (val.lat && val.lng) return `📍 ${val.lat.toFixed(2)}, ${val.lng.toFixed(2)}`;
+        return 'N/A';
+    }
     return (val && val !== 'undefined' && val !== 'null') ? val : 'N/A';
 }
 
 function updateProfileUI() {
+    const farmerId = localStorage.getItem("farmerId");
     if (farmerId) {
-        farmerNameElement.textContent = getCleanValue(localStorage.getItem("farmerName"));
-        farmerEmailElement.textContent = getCleanValue(localStorage.getItem("farmerEmail"));
-        farmerPhoneElement.textContent = getCleanValue(localStorage.getItem("farmerPhone"));
-        if (farmerLocationElement) farmerLocationElement.textContent = getCleanValue(localStorage.getItem("farmerLocation"));
-        authButtonContainer.innerHTML = `<button class="logout-btn" id="farmerLogout">Logout</button>`;
+        if (farmerNameElement) farmerNameElement.textContent = getCleanValue(localStorage.getItem("farmerName"));
+        if (ddName) ddName.textContent = getCleanValue(localStorage.getItem("farmerName"));
+        if (ddEmail) ddEmail.textContent = getCleanValue(localStorage.getItem("farmerEmail"));
+        if (ddPhone) ddPhone.textContent = getCleanValue(localStorage.getItem("farmerPhone"));
+        if (ddLocation) ddLocation.textContent = getCleanValue(localStorage.getItem("farmerAddress"));
         
-        document.getElementById("farmerLogout").onclick = () => {
-            localStorage.clear();
-            window.location.reload();
-        };
         syncFarmerProfile();
     } else {
-        // Logged out state
-        farmerNameElement.textContent = "N/A";
-        farmerEmailElement.textContent = "N/A";
-        farmerPhoneElement.textContent = "N/A";
-        if (farmerLocationElement) farmerLocationElement.textContent = "N/A";
-        authButtonContainer.innerHTML = `<a href="farmerLogin.html" class="login-link">Login</a>`;
+        window.location.href = "farmerLogin.html";
     }
 }
 
 async function syncFarmerProfile() {
+    const farmerId = localStorage.getItem("farmerId");
     if (!farmerId) return;
     try {
         const response = await fetch(`${API_URL}/profile/${farmerId}`);
@@ -254,13 +250,38 @@ async function syncFarmerProfile() {
             const data = await response.json();
             localStorage.setItem("farmerName", data.name);
             localStorage.setItem("farmerEmail", data.email);
-        localStorage.setItem("farmerPhone", data.phone);
-            localStorage.setItem("farmerLocation", data.location || "N/A");
+            localStorage.setItem("farmerPhone", data.phone);
+            localStorage.setItem("farmerAddress", data.address || "N/A");
             
-            farmerNameElement.textContent = data.name;
-            farmerEmailElement.textContent = getCleanValue(data.email);
-            farmerPhoneElement.textContent = getCleanValue(data.phone);
-            if (farmerLocationElement) farmerLocationElement.textContent = getCleanValue(data.location);
+            if (farmerNameElement) farmerNameElement.textContent = data.name;
+            if (ddName) ddName.textContent = data.name;
+            if (ddEmail) ddEmail.textContent = data.email;
+            if (ddPhone) ddPhone.textContent = data.phone;
+            if (ddLocation) ddLocation.textContent = data.address || "N/A";
+            
+            // --- Automated Location Anchoring (Farmer Side) ---
+            if (!data.location || !data.location.lat) {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(async (pos) => {
+                        const { latitude, longitude } = pos.coords;
+                        console.log(`Auto-Anchoring Farmer Location: ${latitude}, ${longitude}`);
+                        
+                        await fetch(`http://localhost:5000/api/farmer/update-location/${farmerId}`, {
+                            method: "PUT",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ lat: latitude, lng: longitude })
+                        });
+                        
+                        // Local update for UI
+                        localStorage.setItem("farmerCoords", JSON.stringify({ lat: latitude, lng: longitude }));
+                    }, (err) => console.error("Geo-Anchoring blocked by browser/user"), 
+                    { enableHighAccuracy: true });
+                }
+            } else {
+                localStorage.setItem("farmerCoords", JSON.stringify(data.location));
+            }
+            // ----------------------------------------------------
+
             loadNotifications();
         }
     } catch (err) {
@@ -268,8 +289,27 @@ async function syncFarmerProfile() {
     }
 }
 
-// Update UI and start intervals
+function toggleProfileMenu(e) {
+    if (e) e.stopPropagation();
+    const card = document.getElementById("farmerProfileCard");
+    if (card) card.classList.toggle("show");
+}
+
+function logout() {
+    localStorage.clear();
+    window.location.href = "farmerLogin.html";
+}
+
+// Close dropdown on outside click
+window.onclick = (e) => {
+    if (!e.target.closest('#farmerHeaderRight')) {
+        const card = document.getElementById("farmerProfileCard");
+        if (card) card.classList.remove("show");
+    }
+};
+
+// Initial calls
 updateProfileUI();
 loadProducts();
 loadNotifications();
-setInterval(loadNotifications, 30000); // Refresh notifications every 30s
+setInterval(loadNotifications, 30000);

@@ -52,7 +52,7 @@ async function loadProducts(searchQuery = "") {
                             </ins>
                         </p>
                         ${p.quantity > 0 ? `
-                        <div class="add-to-cart-btn" onclick="addToCart(this, '${p.name}', ${p.price}, '${unit}', '${imageUrl}', '${p._id}', '${farmerName.replace(/'/g, "\\'")}', ${p.quantity})">
+                        <div class="add-to-cart-btn" onclick="addToCart(this, '${p.name}', ${p.price}, '${unit}', '${imageUrl}', '${p._id}', '${farmerName.replace(/'/g, "\\'")}', ${p.quantity}, '${p.farmerId._id || p.farmerId}')">
                             <p><span class="fa-solid fa-cart-plus"></span> Add to Cart</p>
                         </div>
                         ` : `

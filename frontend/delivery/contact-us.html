@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support Hub | Farmly Partner Operations</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+    <!-- Google Fonts - Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Standalone Premium CSS -->
+    <link rel="stylesheet" href="contact-us.css">
+</head>
+
+<body>
+    <!-- Top Focused Navbar -->
+    <div class="back-nav">
+        <a href="dashboard.html">
+            <i class="fa-solid fa-chevron-left"></i>
+            <span>Back to Dashboard</span>
+        </a>
+    </div>
+
+    <main class="contact-page-content">
+        <!-- Hero Section -->
+        <section class="contact-hero">
+            <h1>Farmly <span>Support Hub</span></h1>
+            <p>On the road and need assistance? Our real-time Farmly operations team is standing by to help you succeed.
+            </p>
+        </section>
+
+        <!-- Main Glassmorphic Container -->
+        <section class="contact-container">
+            <!-- Left Info Panel (Dark Mode) -->
+            <div class="contact-info">
+                <h3>Farmly Operations</h3>
+                <p>For high-priority order issues, please use the dispatch line for immediate real-time response.</p>
+
+                <div class="info-items">
+                    <div class="info-item">
+                        <i class="fa-solid fa-phone"></i>
+                        <div>
+                            <span
+                                style="display:block; font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:1px; margin-bottom: 2px;">Partner
+                                Helpline</span>
+                            <span>+91 800XXXX664</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fa-solid fa-envelope"></i>
+                        <div>
+                            <span
+                                style="display:block; font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:1px; margin-bottom: 2px;">Official
+                                Email</span>
+                            <span>Farmly.2809@gmail.com</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <div>
+                            <span
+                                style="display:block; font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:1px; margin-bottom: 2px;">HQ
+                                Base</span>
+                            <span>K2 Tower, Jagatpura, Jaipur</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Socials -->
+                <div class="social-links">
+                    <a href="#" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#" title="Twitter"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" title="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                </div>
+            </div>
+
+            <!-- Right Form Panel (Glass Mode) -->
+            <div class="contact-form-wrapper">
+                <form id="contactForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Partner Name</label>
+                            <input type="text" id="name" readonly style="cursor: not-allowed;"
+                                title="Verified Farmly Partner">
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="text" id="email" readonly style="cursor: not-allowed;"
+                                title="Verified Farmly Email">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Issue Classification</label>
+                        <select id="category" class="form-control-custom">
+                            <option value="Navigation">Map / Navigation Troubleshooting</option>
+                            <option value="Order">Order Pickup / Delivery Conflict</option>
+                            <option value="Payout">Incentives / Payout Verification</option>
+                            <option value="Account">App Access / Technical Issue</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Details of Response Needed</label>
+                        <textarea id="message" rows="5"
+                            placeholder="Please describe the issue in detail for our technicians..."
+                            required></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        Submit Support Ticket
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Local Field Population Script -->
+    <script>
+        // Populate partner identity tokens from localStorage
+        document.getElementById('name').value = localStorage.getItem('partnerName') || "Anonymous Partner";
+        document.getElementById('email').value = localStorage.getItem('partnerEmail') || "Verified Contact Email";
+
+        // Form submission handling with premium feedback
+        const contactForm = document.getElementById('contactForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        contactForm.onsubmit = async (e) => {
+            e.preventDefault();
+
+            // Visual feedback loop
+            submitBtn.innerHTML = 'Filing Ticket... <i class="fa-solid fa-spinner fa-spin"></i>';
+            submitBtn.style.opacity = '0.7';
+            submitBtn.disabled = true;
+
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                category: document.getElementById('category').value,
+                message: document.getElementById('message').value,
+                type: 'Partner'
+            };
+
+            try {
+                const res = await fetch('http://localhost:5000/api/support/send', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                if (res.ok) {
+                    alert('Farmly Alert Received! Your ticket ID is #FLT-' + Math.floor(1000 + Math.random() * 9000) + '. Our Farmly support team will contact you within 30 minutes.');
+                    contactForm.reset();
+                } else {
+                    alert('Farmly Support Hub is currently busy. Please call our hotline.');
+                }
+            } catch (err) {
+                console.error("Relay Error:", err);
+                alert('Connection to HQ lost. Please use the Partner Helpline.');
+            } finally {
+                submitBtn.innerHTML = 'Submit Support Ticket <i class="fa-solid fa-paper-plane"></i>';
+                submitBtn.style.opacity = '1';
+                submitBtn.disabled = false;
+            }
+        };
+    </script>
+</body>
+
+</html>

@@ -4,7 +4,7 @@ const User = require('./models/User');
 
 async function check() {
     try {
-        await mongoose.connect('mongodb://localhost:27017/farmlyDB'); 
+        await mongoose.connect(process.env.MONGO_URI); 
         const users = await User.find({}).limit(5);
         console.log('USERS IN DB:');
         users.forEach(u => {

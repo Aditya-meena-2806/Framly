@@ -7,87 +7,268 @@
     <title>Farmer Sign Up | Farmly</title>
     <!-- Font link removed -->
     <link rel="stylesheet" href="../css/signup.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        #map { height: 250px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #ddd; }
+        .location-status { font-size: 0.8rem; color: #27ae60; margin-bottom: 10px; display: none; }
+        
+        /* OTP Overlay Styles */
+        .otp-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            backdrop-filter: blur(5px);
+        }
+        .otp-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .otp-card h3 { color: #2e7d32; margin-bottom: 15px; }
+        .otp-card p { color: #666; margin-bottom: 20px; font-size: 0.9rem; }
+        .otp-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 24px;
+            text-align: center;
+            letter-spacing: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            outline: none;
+        }
+        .otp-input:focus { border-color: #2e7d32; }
+        .otp-btn {
+            background: #2e7d32;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+        .otp-btn:hover { background: #1b5e20; }
+        .resend-link {
+            display: block;
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: #2e7d32;
+            text-decoration: none;
+        }
+        .change-email {
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #666;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/signup-map.css">
+</head>
 <body>
-    <div class="signup-container">
-        <h2>Farmer Registration</h2>
-        <form id="farmerSignupForm">
-            <div class="form-group">
-                <label for="name">Full Name</label>
-                <input type="text" id="name" placeholder="Enter your full name" required>
+    <div class="signup-wrapper">
+        <div class="form-section">
+            <div class="header">
+                <h2>Farmer <span>Onboarding</span></h2>
+                <p>Register your farm and start listing your fresh harvest.</p>
             </div>
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" placeholder="Enter your email" required>
+            
+            <form id="farmerSignupForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Farmer Full Name</label>
+                        <input type="text" id="name" placeholder="Enter full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" id="phone" placeholder="Enter contact" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Email Address</label>
+                        <input type="email" id="email" placeholder="Enter @gmail.com address" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Farm Physical Address</label>
+                        <textarea id="address" placeholder="Village, District, Landmark" required rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="password" placeholder="Create password" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <input type="password" id="confirmPassword" placeholder="Confirm password" required>
+                    </div>
+                </div>
+
+                <input type="hidden" id="lat">
+                <input type="hidden" id="lng">
+                
+                <button type="submit">Complete Registration</button>
+            </form>
+            
+            <div class="links">
+                Already registered? <a href="farmerLogin.html">Login</a><br>
+                <a href="../login.html" style="margin-top:10px; display:inline-block; font-size:0.8rem; color:#95a5a6;">← Back to Portal</a>
             </div>
-            <div class="form-group">
-                <label for="phone">Phone Number</label>
-                <input type="tel" id="phone" placeholder="Enter your phone number" required>
+        </div>
+
+        <div class="map-section">
+            <div id="map"></div>
+            <div class="map-overlay">
+                <button id="locateBtn"><i class="fa-solid fa-farm"></i> Locate My Farm</button>
             </div>
-            <div class="form-group">
-                <label for="location">Farm Address</label>
-                <textarea id="location" placeholder="Enter your farm's full address" required rows="3"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" placeholder="Create a password" required>
-            </div>
-            <div class="form-group">
-                <label for="confirmPassword">Confirm Password</label>
-                <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
-            </div>
-            <button type="submit">Create Farmer Account</button>
-        </form>
-        <div class="links">
-            Already have an account? <a href="farmerLogin.html">Login here</a>
-            <a href="../login.html" class="back-link">← Back to Portal</a>
+            <div id="locationStatus" class="status-badge">🚜 Farm Point Set!</div>
         </div>
     </div>
 
+    <!-- OTP Verification Overlay -->
+    <div id="otpOverlay" class="otp-overlay">
+        <div class="otp-card">
+            <div class="header">
+                <h3>Email Verification</h3>
+                <p>We've sent a 6-digit OTP to your email address. Please enter it below to complete registration.</p>
+            </div>
+            <input type="text" id="otpInput" class="otp-input" maxlength="6" placeholder="000000">
+            <button id="verifyOtpBtn" class="otp-btn">Verify & Complete Registration</button>
+            <a href="#" id="resendOtp" class="resend-link">Resend Code</a>
+            <div id="changeEmailBtn" class="change-email">Entered wrong email? Edit</div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
+        const map = L.map('map', { zoomControl: false }).setView([20.5937, 78.9629], 5);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        L.control.zoom({ position: 'bottomright' }).addTo(map);
+        
+        let marker;
+        map.on('click', (e) => setMarker(e.latlng.lat, e.latlng.lng));
+
+        function setMarker(lat, lng) {
+            if (marker) map.removeLayer(marker);
+            marker = L.marker([lat, lng]).addTo(map);
+            document.getElementById("lat").value = lat;
+            document.getElementById("lng").value = lng;
+            document.getElementById("locationStatus").style.display = "block";
+            map.panTo([lat, lng]);
+        }
+
+        document.getElementById("locateBtn").onclick = (e) => {
+            e.preventDefault();
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((pos) => {
+                    map.setView([pos.coords.latitude, pos.coords.longitude], 15);
+                    setMarker(pos.coords.latitude, pos.coords.longitude);
+                });
+            }
+        };
+
         document.getElementById("farmerSignupForm").addEventListener("submit", async (e) => {
             e.preventDefault();
+            const lat = document.getElementById("lat").value;
+            const lng = document.getElementById("lng").value;
+            if(!lat) return alert("Please pin your farm's exact location on the map!");
+
             const name = document.getElementById("name").value;
             const email = document.getElementById("email").value;
             const phone = document.getElementById("phone").value;
-            const location = document.getElementById("location").value;
+            const address = document.getElementById("address").value;
             const password = document.getElementById("password").value;
             const confirmPassword = document.getElementById("confirmPassword").value;
 
-            // Email Validation Logic (Strictly @gmail.com)
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            const emailLower = email.toLowerCase();
-            
-            if (!emailRegex.test(email) || !emailLower.endsWith('@gmail.com')) {
-                  alert("Invalid Email ID! Please enter a valid @gmail.com address.");
-                  return;
-            }
+            if (password !== confirmPassword) return alert("Passwords do not match!");
 
-            if (password !== confirmPassword) {
-                alert("Passwords do not match!");
-                return;
-            }
+            // Prepare Farmer Data
+            const userData = { name, email, password, phone, address, location: { lat: parseFloat(lat), lng: parseFloat(lng) } };
 
             try {
-                const response = await fetch("http://localhost:5000/api/farmer/register", {
+                // Step 1: Request OTP
+                document.querySelector("button[type='submit']").innerText = "Sending Code...";
+                document.querySelector("button[type='submit']").disabled = true;
+
+                const response = await fetch("http://localhost:5000/api/otp/send", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name, email, password, phone, location })
+                    body: JSON.stringify({ role: 'farmer', email, userData })
                 });
+                
                 const data = await response.json();
-
+                
                 if (response.ok) {
-                    alert("Registration Successful! Please wait for Admin approval before logging in.");
-                    window.location.href = "farmerLogin.html";
+                    document.getElementById("otpOverlay").style.display = "flex";
                 } else {
-                    alert(data.error || data.message || "Registration Failed");
+                    alert(data.message || "Failed to send OTP");
                 }
-            } catch (err) {
-                alert("Server Error. Ensure Backend is running.");
+            } catch (err) { 
+                alert("Server error sending OTP."); 
+            } finally {
+                document.querySelector("button[type='submit']").innerText = "Complete Registration";
+                document.querySelector("button[type='submit']").disabled = false;
             }
         });
+
+        // Step 2: Verify OTP
+        document.getElementById("verifyOtpBtn").onclick = async () => {
+            const otp = document.getElementById("otpInput").value;
+            const email = document.getElementById("email").value;
+
+            if (otp.length !== 6) return alert("Enter 6-digit OTP");
+
+            try {
+                const btn = document.getElementById("verifyOtpBtn");
+                btn.innerText = "Verifying...";
+                btn.disabled = true;
+
+                const response = await fetch("http://localhost:5000/api/otp/verify", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, otp, role: 'farmer' })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    alert("Account Verified! Waiting for Admin Approval.");
+                    window.location.href = "farmerLogin.html";
+                } else {
+                    alert(data.message || "Invalid OTP");
+                }
+            } catch (err) {
+                alert("Verification failed.");
+            } finally {
+                document.getElementById("verifyOtpBtn").innerText = "Verify & Complete Registration";
+                document.getElementById("verifyOtpBtn").disabled = false;
+            }
+        };
+
+        // Close/Resend logic
+        document.getElementById("changeEmailBtn").onclick = () => {
+            document.getElementById("otpOverlay").style.display = "none";
+        };
+        
+        document.getElementById("resendOtp").onclick = (e) => {
+            e.preventDefault();
+            document.getElementById("farmerSignupForm").dispatchEvent(new Event('submit'));
+        };
     </script>
+</body>
+</html>
 </body>
 
 </html>
